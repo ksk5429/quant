@@ -113,15 +113,17 @@ class PredictionEngineV4:
         kelly_fraction: float = 0.25,
         bankroll_usd: float = 1000.0,
         claude_bin: str = "",
+        db: "DatabaseManager | None" = None,
     ) -> None:
         self.model = model
         self.researcher_model = researcher_model
         self.max_concurrent = max_concurrent
         self.available_modes = available_modes or ["cli"]
         self.claude_bin = claude_bin
+        self.db = db
 
         self.calibrator = calibrator or ProbabilityCalibrator(method="auto")
-        self._seed_calibrator_from_retrodiction()
+        self._seed_calibrator()
         self._edge_detector = EdgeDetector()
         self._sizer = KellyPositionSizer(
             kelly_fraction=kelly_fraction, bankroll_usd=bankroll_usd,
@@ -141,13 +143,28 @@ class PredictionEngineV4:
             f"modes={available_modes}"
         )
 
-    def _seed_calibrator_from_retrodiction(self) -> None:
-        """Pre-seed the calibrator from existing retrodiction data.
+    def _seed_calibrator(self) -> None:
+        """Seed the calibrator from DB first, then fall back to JSON files.
 
-        Loads all retrodiction JSON results and feeds (prediction, outcome)
-        pairs into the calibrator. This means the calibrator is ready to
-        use from the first live prediction, rather than being a no-op.
+        Priority:
+        1. Database calibration_data table (if db is connected)
+        2. Retrodiction JSON files (fallback for first run before DB exists)
         """
+        # Try DB first
+        if self.db is not None:
+            try:
+                preds, outs = self.db.get_calibration_data(limit=5000)
+                if preds:
+                    self.calibrator.fit(preds, outs)
+                    logger.info(
+                        f"Calibrator seeded from DB: {len(preds)} samples, "
+                        f"method={self.calibrator.active_method}"
+                    )
+                    return
+            except Exception as e:
+                logger.warning(f"DB calibration load failed: {e}")
+
+        # Fall back to JSON files
         retro_dir = Path("data/retrodiction")
         if not retro_dir.exists():
             return
@@ -168,7 +185,7 @@ class PredictionEngineV4:
         if preds:
             self.calibrator.fit(preds, outs)
             logger.info(
-                f"Calibrator seeded from retrodiction: {len(preds)} samples, "
+                f"Calibrator seeded from JSON: {len(preds)} samples, "
                 f"method={self.calibrator.active_method}"
             )
 
@@ -351,7 +368,7 @@ class PredictionEngineV4:
         self._markets_analyzed += 1
         self._total_elapsed += elapsed
 
-        return EngineV4Result(
+        result = EngineV4Result(
             market_id=market_id,
             question=question,
             category=classification["category"],
@@ -377,6 +394,15 @@ class PredictionEngineV4:
             research_elapsed_s=round(research_elapsed, 1),
             fish_predictions=final_preds,
         )
+
+        # ── Log to database ──
+        if self.db is not None:
+            try:
+                self.db.log_prediction(result, market_price=market_price)
+            except Exception as e:
+                logger.warning(f"DB log_prediction failed: {e}")
+
+        return result
 
     async def _run_round(
         self,
@@ -486,8 +512,14 @@ CONSTRAINTS:
         brier = (prediction - outcome) ** 2
         self._competition.record(self.model, brier)
 
-        # Feed calibration pipeline
+        # Feed calibration pipeline (in-memory + DB)
         self.calibrator.fit([prediction], [outcome])
+        if self.db is not None:
+            try:
+                self.db.log_calibration_point(prediction, outcome, market_id)
+                self.db.log_resolution(market_id, outcome)
+            except Exception as e:
+                logger.warning(f"DB record_outcome failed: {e}")
 
         # Track real P&L only when a position was actually taken
         if position and market_price is not None:
