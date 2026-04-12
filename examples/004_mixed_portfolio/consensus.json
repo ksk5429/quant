@@ -1,0 +1,149 @@
+{
+  "timestamp": "20260412_190000",
+  "signals": [
+    {
+      "market_id": "573647",
+      "market_question": "Will GPT-6 be released before GTA VI?",
+      "market_price": 0.7,
+      "swarm_probability": 0.6064,
+      "edge": -0.0936,
+      "confidence": 0.4999,
+      "spread": 0.24,
+      "fish_count": 5,
+      "signal": "BUY NO",
+      "position_usd": 16.71
+    },
+    {
+      "market_id": "556062",
+      "market_question": "MegaETH market cap (FDV) >$2B one day after launch?",
+      "market_price": 0.105,
+      "swarm_probability": 0.1229,
+      "edge": 0.0179,
+      "confidence": 0.4794,
+      "spread": 0.1,
+      "fish_count": 5,
+      "signal": "PASS",
+      "position_usd": 0
+    },
+    {
+      "market_id": "556108",
+      "market_question": "Will MegaETH perform an airdrop by June 30? ",
+      "market_price": 0.439,
+      "swarm_probability": 0.3746,
+      "edge": -0.0644,
+      "confidence": 0.4407,
+      "spread": 0.07,
+      "fish_count": 5,
+      "signal": "BUY NO",
+      "position_usd": 16.16
+    },
+    {
+      "market_id": "540844",
+      "market_question": "Will bitcoin hit $1m before GTA VI?",
+      "market_price": 0.489,
+      "swarm_probability": 0.4929,
+      "edge": 0.0039,
+      "confidence": 0.8919,
+      "spread": 0.015,
+      "fish_count": 5,
+      "signal": "PASS",
+      "position_usd": 0
+    },
+    {
+      "market_id": "573656",
+      "market_question": "Will Bitcoin hit $150k by December 31, 2026?",
+      "market_price": 0.095,
+      "swarm_probability": 0.1022,
+      "edge": 0.0072,
+      "confidence": 0.5382,
+      "spread": 0.12,
+      "fish_count": 5,
+      "signal": "PASS",
+      "position_usd": 0
+    },
+    {
+      "market_id": "573655",
+      "market_question": "Will Bitcoin hit $150k by June 30, 2026?",
+      "market_price": 0.0185,
+      "swarm_probability": 0.0164,
+      "edge": -0.0021,
+      "confidence": 0.7987,
+      "spread": 0.015,
+      "fish_count": 5,
+      "signal": "PASS",
+      "position_usd": 0
+    },
+    {
+      "market_id": "567687",
+      "market_question": "Russia x Ukraine ceasefire by end of 2026?",
+      "market_price": 0.295,
+      "swarm_probability": 0.2167,
+      "edge": -0.0783,
+      "confidence": 0.5461,
+      "spread": 0.07,
+      "fish_count": 5,
+      "signal": "BUY NO",
+      "position_usd": 36.24
+    },
+    {
+      "market_id": "567621",
+      "market_question": "Will China invade Taiwan by end of 2026?",
+      "market_price": 0.087,
+      "swarm_probability": 0.0364,
+      "edge": -0.0506,
+      "confidence": 0.8092,
+      "spread": 0.03,
+      "fish_count": 5,
+      "signal": "BUY NO",
+      "position_usd": 50.0
+    },
+    {
+      "market_id": "567688",
+      "market_question": "Netanyahu out by end of 2026?",
+      "market_price": 0.43,
+      "swarm_probability": 0.5547,
+      "edge": 0.1247,
+      "confidence": 0.485,
+      "spread": 0.1,
+      "fish_count": 5,
+      "signal": "BUY YES",
+      "position_usd": 26.53
+    },
+    {
+      "market_id": "562802",
+      "market_question": "Will the Democratic Party control the House after the 2026 Midterm elections?",
+      "market_price": 0.855,
+      "swarm_probability": 0.7856,
+      "edge": -0.0694,
+      "confidence": 0.6054,
+      "spread": 0.1,
+      "fish_count": 5,
+      "signal": "BUY NO",
+      "position_usd": 12.29
+    },
+    {
+      "market_id": "562803",
+      "market_question": "Will the Republican Party control the House after the 2026 Midterm elections?",
+      "market_price": 0.145,
+      "swarm_probability": 0.2144,
+      "edge": 0.0694,
+      "confidence": 0.6054,
+      "spread": 0.1,
+      "fish_count": 5,
+      "signal": "BUY YES",
+      "position_usd": 12.29
+    },
+    {
+      "market_id": "540819",
+      "market_question": "Will Jesus Christ return before GTA VI?",
+      "market_price": 0.485,
+      "swarm_probability": 0.4909,
+      "edge": 0.0059,
+      "confidence": 0.8951,
+      "spread": 0.02,
+      "fish_count": 5,
+      "signal": "PASS",
+      "position_usd": 0
+    }
+  ]
+}

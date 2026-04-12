@@ -360,6 +360,66 @@ Where is Mirofish in 1 year? 3 years? 5 years?
 
 ---
 
+## Topic 11: Tiered Compute Architecture (KSK's Key Insight)
+
+### The Insight
+> "First pass of fish is expensive. Sequential and depth. Events or price spikes will be a separate flow that works on a subset of data. Think opus vs sonnet vs haiku. You need expensive first pass to understand and generate the graph. But after that you may not need as many fish running. Only diff based."
+
+This is the single most important architectural evolution for Mirofish. It transforms the system from "run everything every time" to "build understanding once, update incrementally."
+
+### Proposed Architecture: Full Pass + Differential Updates
+
+```
+FULL PASS (expensive, infrequent — weekly or when entering new markets)
+  8 Fish x Opus 4.6 x 12 markets = 96 analyses
+  Builds: market graph, cross-market correlations, base knowledge
+  Cost: ~2 hours human time, $0 on Max plan
+  Output: shared_state/knowledge_graph.json (the "brain")
+
+DIFFERENTIAL UPDATE (cheap, frequent — daily or on events)
+  Triggered by: price spike >5%, breaking news, market resolution
+  Runs: 2-3 Fish (Researcher + most relevant specialist) x affected markets only
+  Uses: Sonnet or Haiku model (if API), or quick Claude session (if Max)
+  Cost: ~15 minutes, hits only changed data
+  Output: patches to knowledge_graph.json
+
+EVENT-TRIGGERED REANALYSIS (medium, on-demand)
+  Triggered by: GOD node event injection (human drops real-world event)
+  Runs: 3-5 Fish on affected market cluster only
+  Reads: existing knowledge graph + new event
+  Output: updated probabilities for affected markets only
+```
+
+### Why This Works (Computer Science Analogy)
+- **Full Pass** = full build (`make clean && make all`)
+- **Differential** = incremental build (`make` — only recompile changed files)
+- **Event-triggered** = hot reload (patch running system without full restart)
+
+The knowledge graph is the compiled artifact. Once built, you don't rebuild from scratch — you patch it.
+
+### Implementation Plan
+1. Define `shared_state/knowledge_graph.json` schema (markets, correlations, Fish estimates, timestamps)
+2. Full pass writes to knowledge graph
+3. `diff_update.py` script: takes event/price change, identifies affected markets, runs minimal Fish
+4. `event_trigger.py` script: human describes event, system identifies affected graph nodes, runs targeted reanalysis
+
+### Model Routing (KSK's opus/sonnet/haiku insight)
+| Task | Model | Cost | When |
+|------|-------|------|------|
+| Full Pass analysis | Opus 4.6 (Max plan) | $0 | Weekly, new markets |
+| Differential update | Sonnet 4.6 (API) | ~$0.01/market | Daily price checks |
+| Quick screening | Haiku 4.5 (API) | ~$0.001/market | Hourly market scan |
+| Event reanalysis | Opus 4.6 (Max plan) | $0 | On breaking news |
+
+### Discussion Prompts
+1. How often should the full pass run? Weekly? Only when entering a new market category?
+2. What triggers a differential update? Price change >5%? Volume spike >2x?
+3. Should the knowledge graph store Fish reasoning chains, or just probabilities?
+4. How do we handle graph staleness? Auto-expire after 7 days?
+5. Can we pre-compute which Fish are most relevant per market category?
+
+---
+
 ## Meeting Schedule Template
 
 | Week | Topic | Prep Reading | Duration |
