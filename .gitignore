@@ -24,13 +24,36 @@ config/local.yaml
 *.pem
 *.key
 
-# Data
+# Data — large files and external datasets
 data/raw/*
 data/processed/*
 data/cache/*
+data/external/
+data/resolved_markets/*.json
+data/retrodiction/*.json
+data/news_cache/
+data/mlflow/
+data/reports/
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/cache/.gitkeep
+
+# Literature review source PDFs and converted markdown
+literature_review/sources/*.pdf
+literature_review/sources/markdown/
+
+# Swarm Intelligence .claude directories
+Swarm_Intelligence/**/.claude/
+
+# Shared state runtime data
+shared_state/market_data/
+shared_state/analyses/
+shared_state/consensus/
+shared_state/signals/
+shared_state/fish_tasks/
+shared_state/responses/
+shared_state/results/
+shared_state/heartbeats/
 
 # Logs
 logs/*.log

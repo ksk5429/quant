@@ -1,8 +1,13 @@
-"""Fish — an individual LLM agent that analyzes one prediction market.
+"""Fish v1 — DEPRECATED. Use llm_fish.py (v2) instead.
 
-Each Fish has a persona (e.g., "geopolitical_analyst"), receives market data
-and news context, and produces a probability estimate with confidence score.
-Fish communicate through the MessageBus to share cross-market insights.
+This module is retained for reference only. The v2 implementation in
+llm_fish.py provides 9 orthogonal personas, zero-cost CLI execution,
+extremized aggregation, and multi-round Delphi protocol.
+
+The FishAnalysis model here has richer fields (cross_market_adjustment,
+risk_factors) that may be ported to v2 in the future.
+
+DEPRECATED: 2026-04-12. Do not import from this module for new code.
 """
 
 from __future__ import annotations
