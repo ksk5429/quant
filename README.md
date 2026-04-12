@@ -32,72 +32,13 @@ K-Fish deploys 9 LLM agents ("Fish") that each use a **structurally different re
 
 ## Pipeline
 
-```
-                    ┌─────────────────────────────┐
-                    │     MARKET QUESTION          │
-                    │   (price withheld from Fish) │
-                    └──────────────┬──────────────┘
-                                   │
-                    ┌──────────────▼──────────────┐
-                    │       SWARM ROUTER           │
-                    │  classifies: politics/crypto/ │
-                    │  sports/geopolitics/economics │
-                    │  selects: persona set, rounds │
-                    └──────────────┬──────────────┘
-                                   │
-                    ┌──────────────▼──────────────┐
-                    │     RESEARCHER FISH           │
-                    │  gathers: base rates, facts,  │
-                    │  timing, contrarian case       │
-                    └──────────────┬──────────────┘
-                                   │
-         ┌─────────────────────────┼─────────────────────────┐
-         │                         │                         │
-    ┌────▼────┐              ┌────▼────┐              ┌────▼────┐
-    │  Round 1 │              │  Round 2 │              │  Round 3 │
-    │ 9 Fish   │     ───►     │ Peer     │     ───►     │ Converge │
-    │ analyze  │              │ context  │              │ or stop  │
-    │ alone    │              │ update   │              │          │
-    └────┬────┘              └────┬────┘              └────┬────┘
-         │                         │                         │
-         └─────────────────────────┼─────────────────────────┘
-                                   │
-                    ┌──────────────▼──────────────┐
-                    │      AGGREGATION             │
-                    │  trimmed mean + conf-weighted │
-                    │  + asymmetric extremization   │
-                    └──────────────┬──────────────┘
-                                   │
-              ┌────────────────────┼────────────────────┐
-              │                    │                    │
-    ┌─────────▼────────┐ ┌────────▼────────┐ ┌────────▼────────┐
-    │   CALIBRATE       │ │  VOLATILITY     │ │  CONFORMAL       │
-    │   netcal auto     │ │  GARCH regime   │ │  90% interval    │
-    │   Beta/Histogram  │ │  Kelly adjust   │ │  coverage bound  │
-    └─────────┬────────┘ └────────┬────────┘ └────────┬────────┘
-              │                    │                    │
-              └────────────────────┼────────────────────┘
-                                   │
-                    ┌──────────────▼──────────────┐
-                    │       EDGE DETECTION         │
-                    │  |cal_prob - mkt_price| > 7%  │
-                    │  confidence > 40%             │
-                    │  spread < 35%                 │
-                    └──────────────┬──────────────┘
-                                   │
-                    ┌──────────────▼──────────────┐
-                    │       KELLY SIZING           │
-                    │  quarter-Kelly, 5% max/pos   │
-                    │  30% max exposure             │
-                    │  15% drawdown circuit breaker │
-                    └──────────────┬──────────────┘
-                                   │
-                    ┌──────────────▼──────────────┐
-                    │       POSITION               │
-                    │  side (YES/NO) + size ($)     │
-                    │  + EV + reasoning chain       │
-                    └─────────────────────────────┘
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/pipeline_diagram.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/pipeline_diagram_light.png">
+    <img alt="K-Fish Pipeline" src="docs/pipeline_diagram.png" width="700">
+  </picture>
+</p>
 
 ---
 
