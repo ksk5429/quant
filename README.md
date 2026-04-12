@@ -424,3 +424,4 @@ graph TD
 <p align="center">
 <sub>Built with structured human-AI collaboration · Paper trading is the default · Live trading requires explicit human approval</sub>
 </p>
+
