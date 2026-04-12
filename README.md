@@ -292,53 +292,46 @@ src/
 </details>
 
 <details>
-<summary><strong>Module Dependency Graph</strong> (click to expand)</summary>
+<summary><strong>Module Architecture</strong> (click to expand)</summary>
 
 ```mermaid
-graph TD
-    subgraph ENGINE ["Engine Layer"]
-        E4["engine_v4"]
-        LP["live_pipeline"]
-        SR["swarm_router"]
+block-beta
+    columns 1
+
+    block:ENGINE["🔷 ENGINE LAYER"]
+        columns 3
+        LP["live_pipeline"] E4["engine_v4"] SR["swarm_router"]
     end
 
-    subgraph SWARM ["Swarm Layer"]
-        LF["llm_fish"]
-        RS["researcher"]
-        IPC["ipc"]
+    space
+
+    block:SWARM["🐟 SWARM LAYER"]
+        columns 3
+        LF["llm_fish\n9 personas\n4 backends"] RS["researcher\ncontext gathering"] IPC["ipc\ndistributed Fish"]
     end
 
-    subgraph PREDICTION ["Prediction Layer"]
-        CAL["calibration"]
-        ADV["advanced_scoring"]
-        VOL["volatility"]
-        RET["run_retrodiction"]
+    space
+
+    block:PRED["📊 PREDICTION LAYER"]
+        columns 4
+        CAL["calibration\nnetcal v2"] ADV["advanced_scoring\nBrier · CRPS"] VOL["volatility\nGARCH"] RET["run_retrodiction\nCLI evaluation"]
     end
 
-    subgraph RISK ["Risk Layer"]
-        PF["portfolio"]
-        AN["analytics"]
+    space
+
+    block:RISK["🛡️ RISK LAYER"]
+        columns 2
+        PF["portfolio\nKelly · edge · drawdown"] AN["analytics\nSharpe · Monte Carlo"]
     end
 
-    subgraph MARKET ["Market Layer"]
-        PM["polymarket"]
-        SC["scanner"]
-        HI["history"]
-        DS["dataset"]
+    space
+
+    block:MKT["🌐 MARKET LAYER"]
+        columns 4
+        SC["scanner\nlive discovery"] PM["polymarket\nGamma + CLOB"] HI["history\n2500 resolved"] DS["dataset\n408K parquet"]
     end
 
-    LP --> E4 --> LF & RS & SR & CAL & PF & VOL & ADV
-    RET --> LF & HI
-    SC --> PM & SR
-    LF --> CAL
-    E4 --> PF
-    PF --> AN
-
-    style ENGINE fill:#1a1a2e,stroke:#58a6ff
-    style SWARM fill:#0a1929,stroke:#1f6feb
-    style PREDICTION fill:#0a2910,stroke:#3fb950
-    style RISK fill:#2a0a0a,stroke:#f85149
-    style MARKET fill:#2d1f00,stroke:#d29922
+    ENGINE --> SWARM --> PRED --> RISK --> MKT
 ```
 
 </details>
