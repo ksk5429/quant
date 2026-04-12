@@ -355,33 +355,25 @@ graph TD
 ## Roadmap
 
 ```mermaid
-timeline
-    title K-Fish Development Roadmap
-    Phase 1 : Core engine
-             : 45 tests
-             : Literature review
-             : Polymarket API
-    Phase 2 : 9 Fish personas
-             : Multi-round Delphi
-             : CLI execution
-    Phase 3 : Retrodiction baseline
-             : Brier 0.213
-             : netcal calibration
-    Phase 4 : Kelly sizing
-             : Edge detection
-             : Drawdown monitor
-             : Monte Carlo
-    Phase 5 : Live market scanner
-             : Live pipeline
-             : SwarmRouter
-    Phase 6 : 200+ market calibration
-             : CLOB order execution
-             : Dashboard
-    Phase 7 : Fine-tuned Fish (GRPO)
-             : Cross-platform arbitrage
-```
+graph TD
+    P1["✅ <b>Phase 1</b> — Foundation<br/>Core engine · 45 tests · Literature review · Polymarket API"]
+    P2["✅ <b>Phase 2</b> — Swarm Intelligence<br/>9 Fish personas · Multi-round Delphi · CLI execution"]
+    P3["✅ <b>Phase 3</b> — Calibration<br/>Retrodiction baseline (Brier 0.213) · netcal integration"]
+    P4["✅ <b>Phase 4</b> — Risk Management<br/>Kelly sizing · Edge detection · Drawdown monitor · Monte Carlo"]
+    P5["✅ <b>Phase 5</b> — Live Pipeline<br/>Market scanner · Live pipeline · SwarmRouter"]
+    P6["🔄 <b>Phase 6</b> — Scale<br/>200+ market calibration · CLOB order execution · Dashboard"]
+    P7["⬜ <b>Phase 7</b> — Optimization<br/>Fine-tuned specialist Fish (GRPO) · Cross-platform arbitrage"]
 
-> Phases 1–5 complete. Phase 6 in progress (200-market retrodiction running).
+    P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7
+
+    style P1 fill:#0a2910,stroke:#3fb950,color:#3fb950
+    style P2 fill:#0a2910,stroke:#3fb950,color:#3fb950
+    style P3 fill:#0a2910,stroke:#3fb950,color:#3fb950
+    style P4 fill:#0a2910,stroke:#3fb950,color:#3fb950
+    style P5 fill:#0a2910,stroke:#3fb950,color:#3fb950
+    style P6 fill:#1a1a2e,stroke:#58a6ff,color:#58a6ff
+    style P7 fill:#1a1a2e,stroke:#8b949e,color:#8b949e
+```
 
 ---
 
