@@ -253,3 +253,150 @@ def _fallback_mce(preds, outs, n_bins):
         if np.any(mask):
             mce = max(mce, abs(float(np.mean(outs[mask])) - float(np.mean(preds[mask]))))
     return float(mce)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# STATISTICAL SIGNIFICANCE — Phase 2.3
+# ═══════════════════════════════════════════════════════════════════════
+
+def brier_skill_score(our_brier: float, reference_brier: float) -> float:
+    """Brier Skill Score: BSS = 1 - (our / reference).
+
+    > 0 means we beat the reference.
+    = 0 means equal.
+    < 0 means we're worse.
+
+    Common references:
+    - 0.25 = uniform random (always predict 0.5)
+    - market closing price = crowd wisdom baseline
+    """
+    if reference_brier <= 0:
+        return 0.0
+    return 1.0 - our_brier / reference_brier
+
+
+@dataclass
+class PairedBrierResult:
+    """Result of a paired bootstrap test comparing two forecasters."""
+    bss: float               # Brier Skill Score (>0 = we beat market)
+    p_value: float            # probability BSS <= 0 under bootstrap
+    ci_lower: float           # 95% CI lower bound on our Brier
+    ci_upper: float           # 95% CI upper bound on our Brier
+    n_markets: int
+    our_brier: float
+    market_brier: float
+    significant: bool         # p_value < 0.10
+
+
+def paired_brier_test(
+    our_predictions: Sequence[float],
+    market_prices: Sequence[float],
+    outcomes: Sequence[float],
+    n_bootstrap: int = 10000,
+    seed: int = 42,
+) -> PairedBrierResult:
+    """Bootstrap test: is K-Fish Brier significantly different from market?
+
+    Compares our calibrated predictions against market closing prices
+    (the crowd's implicit probability estimate). If BSS > 0 with
+    p < 0.10, we have statistically significant edge.
+
+    Args:
+        our_predictions: our calibrated probabilities
+        market_prices: market YES prices at time of prediction
+        outcomes: actual binary outcomes (0 or 1)
+        n_bootstrap: number of bootstrap resamples
+        seed: random seed
+
+    Returns:
+        PairedBrierResult with BSS, p-value, and CI.
+    """
+    ours = np.array(our_predictions)
+    market = np.array(market_prices)
+    outs = np.array(outcomes)
+    n = len(ours)
+
+    our_brier = float(np.mean((ours - outs) ** 2))
+    mkt_brier = float(np.mean((market - outs) ** 2))
+    bss = brier_skill_score(our_brier, mkt_brier)
+
+    # Paired bootstrap
+    rng = np.random.RandomState(seed)
+    boot_bss = np.zeros(n_bootstrap)
+
+    for b in range(n_bootstrap):
+        idx = rng.choice(n, size=n, replace=True)
+        b_ours = float(np.mean((ours[idx] - outs[idx]) ** 2))
+        b_mkt = float(np.mean((market[idx] - outs[idx]) ** 2))
+        boot_bss[b] = brier_skill_score(b_ours, b_mkt)
+
+    p_value = float(np.mean(boot_bss <= 0))
+    ci_lower = float(np.percentile(
+        [np.mean((ours[rng.choice(n, n, True)] - outs[rng.choice(n, n, True)]) ** 2)
+         for _ in range(n_bootstrap)], 2.5
+    ))
+    ci_upper = float(np.percentile(
+        [np.mean((ours[rng.choice(n, n, True)] - outs[rng.choice(n, n, True)]) ** 2)
+         for _ in range(n_bootstrap)], 97.5
+    ))
+
+    return PairedBrierResult(
+        bss=round(bss, 4),
+        p_value=round(p_value, 4),
+        ci_lower=round(ci_lower, 4),
+        ci_upper=round(ci_upper, 4),
+        n_markets=n,
+        our_brier=round(our_brier, 4),
+        market_brier=round(mkt_brier, 4),
+        significant=p_value < 0.10,
+    )
+
+
+@dataclass
+class CategoryStats:
+    """Statistics for a single market category."""
+    category: str
+    n_markets: int
+    brier: float
+    accuracy: float
+    avg_edge: float
+    bss_vs_random: float
+
+
+def per_category_breakdown(
+    predictions: list[dict],
+) -> dict[str, CategoryStats]:
+    """Which categories does K-Fish have edge in?
+
+    Each dict in predictions should have:
+    - category: str
+    - prediction: float (our calibrated probability)
+    - outcome: float (0 or 1)
+    - market_price: float (optional, for edge computation)
+    """
+    categories: dict[str, list[dict]] = {}
+    for p in predictions:
+        cat = p.get("category", "general") or "general"
+        categories.setdefault(cat, []).append(p)
+
+    stats = {}
+    for cat, items in categories.items():
+        preds = np.array([i["prediction"] for i in items])
+        outs = np.array([i["outcome"] for i in items])
+        prices = np.array([i.get("market_price", 0.5) or 0.5 for i in items])
+
+        brier = float(np.mean((preds - outs) ** 2))
+        accuracy = float(np.mean((preds >= 0.5).astype(float) == outs))
+        avg_edge = float(np.mean(np.abs(preds - prices)))
+        bss = brier_skill_score(brier, 0.25)
+
+        stats[cat] = CategoryStats(
+            category=cat,
+            n_markets=len(items),
+            brier=round(brier, 4),
+            accuracy=round(accuracy, 4),
+            avg_edge=round(avg_edge, 4),
+            bss_vs_random=round(bss, 4),
+        )
+
+    return dict(sorted(stats.items(), key=lambda x: x[1].brier))
