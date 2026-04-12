@@ -64,23 +64,25 @@ class PositionManager:
             getattr(position, "edge", 0)  # approximate
         )
 
-        # Place order
+        # Place order — BUY the token matching our side
         result = await self.executor.place_limit_order(
             token_id=token_id or f"token_{market_id}",
-            side="BUY",
+            side="BUY",  # always BUY the token we want (YES token or NO token)
             price=order_price,
             size=size_usd,
             midpoint=order_price,
         )
 
-        # Log to DB
+        # Log to DB with ACTUAL entry price (not edge)
         if result.is_filled:
             try:
                 pos_id = self.db.open_position(
                     position=position,
                     prediction_id=prediction_id,
+                    entry_price=result.filled_price,
                     order_id=result.order_id,
                     tx_hash=result.tx_hash or "",
+                    token_id=token_id or f"token_{market_id}",
                 )
                 logger.info(f"Position opened: id={pos_id} {side} ${size_usd:.2f}")
             except Exception as e:
@@ -111,11 +113,17 @@ class PositionManager:
             outcome = resolved["outcome"]
             exit_price = 1.0 if outcome == 1.0 else 0.0
 
-            # Calculate P&L
+            # Calculate P&L for binary prediction market:
+            # Buy YES at price p → shares = size/p → payout = shares * outcome
+            # P&L = payout - cost = shares * outcome - size_usd
             if pos.side == "YES":
-                pnl = (outcome - pos.entry_price) * pos.size_usd / max(pos.entry_price, 0.01)
+                shares = pos.size_usd / max(pos.entry_price, 0.01)
+                payout = shares * outcome  # 1.0 if YES wins, 0.0 if NO wins
+                pnl = payout - pos.size_usd
             else:
-                pnl = ((1.0 - outcome) - (1.0 - pos.entry_price)) * pos.size_usd / max(1.0 - pos.entry_price, 0.01)
+                shares = pos.size_usd / max(1.0 - pos.entry_price, 0.01)
+                payout = shares * (1.0 - outcome)  # 1.0 if NO wins, 0.0 if YES wins
+                pnl = payout - pos.size_usd
 
             pnl = round(pnl, 2)
 

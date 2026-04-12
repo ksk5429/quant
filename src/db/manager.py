@@ -165,10 +165,24 @@ class DatabaseManager:
         self,
         position: Any,
         prediction_id: int,
+        entry_price: float = 0.0,
         order_id: str = "",
         tx_hash: str = "",
+        token_id: str = "",
     ) -> int:
-        """Record a new open position. Returns the position ID."""
+        """Record a new open position. Returns the position ID.
+
+        Args:
+            position: Position object from engine.
+            prediction_id: FK to predictions table.
+            entry_price: actual market price at entry (NOT edge).
+            order_id: exchange order ID.
+            tx_hash: on-chain transaction hash.
+            token_id: CTF token ID.
+        """
+        size_usd = getattr(position, "position_size_usd", 0.0)
+        shares = size_usd / entry_price if entry_price > 0.01 else 0
+
         cursor = self.conn.execute("""
             INSERT INTO positions (
                 market_id, question, side, entry_price, size_usd,
@@ -179,14 +193,14 @@ class DatabaseManager:
             getattr(position, "market_id", ""),
             getattr(position, "question", ""),
             getattr(position, "side", "YES"),
-            getattr(position, "edge", 0.0),  # entry_price from market
-            getattr(position, "position_size_usd", 0.0),
-            0,  # shares computed after execution
+            entry_price,
+            size_usd,
+            shares,
             datetime.now().isoformat(),
             prediction_id,
             order_id,
             tx_hash,
-            "",  # token_id
+            token_id,
         ))
         self.conn.commit()
         return cursor.lastrowid

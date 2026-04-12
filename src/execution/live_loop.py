@@ -46,6 +46,7 @@ from src.execution.polymarket_executor import PolymarketExecutor
 from src.execution.position_manager import PositionManager
 from src.markets.scanner import MarketScanner
 from src.mirofish.engine_v4 import PredictionEngineV4
+from src.reporting.alerts import AlertManager
 from src.risk.portfolio import DrawdownMonitor
 
 
@@ -96,7 +97,15 @@ class LiveTradingLoop:
         self.db = db
         self.config = config
         self._drawdown = DrawdownMonitor(max_drawdown_pct=0.15)
+        self._alerts = AlertManager()
         self._cycle_count = 0
+
+        # Restore drawdown halt from DB
+        halt_state = db.get_system_state("drawdown_halted")
+        if halt_state == "true":
+            self._drawdown.halted = True
+            executor.set_drawdown_halt(True)
+            logger.warning("Drawdown halt restored from DB")
 
     async def run_cycle(self) -> CycleReport:
         """Single scan→analyze→execute cycle."""
@@ -118,11 +127,25 @@ class LiveTradingLoop:
             for c in closed:
                 total_pnl += c.pnl_usd
                 self._drawdown.record_pnl(c.pnl_usd)
+                self.executor.release_exposure(c.size_usd)
+                self._alerts.position_closed(
+                    c.market_id, c.question, c.pnl_usd, c.reason,
+                )
+                # Feed calibrator with resolution
+                self.engine.record_outcome(
+                    market_id=c.market_id,
+                    prediction=0.5,  # will be overridden by DB lookup
+                    outcome=1.0 if c.side == "YES" and c.pnl_usd > 0 else 0.0,
+                )
             if self._drawdown.check_halt(self.config.bankroll_usd):
                 self.executor.set_drawdown_halt(True)
-                logger.warning("DRAWDOWN HALT — stopping new positions")
+                self.db.set_system_state("drawdown_halted", "true")
+                self._alerts.drawdown_halt(
+                    self._drawdown.current_drawdown / self.config.bankroll_usd
+                )
         except Exception as e:
             logger.exception(f"Resolution check failed: {e}")
+            self._alerts.engine_error(str(e))
             errors.append(f"resolution: {e}")
 
         # ── Step 2: Scan markets ──
@@ -179,6 +202,12 @@ class LiveTradingLoop:
                     )
                     if order.is_filled:
                         n_opened += 1
+                        self._alerts.position_opened(
+                            market.id, market.question,
+                            result.position.side,
+                            result.position.position_size_usd,
+                            result.edge,
+                        )
 
                     logger.info(
                         f"  [{i}] {result.position.side} ${result.position.position_size_usd:.0f} "
@@ -349,7 +378,8 @@ async def main():
         if args.reset_drawdown:
             loop._drawdown.halted = False
             executor.set_drawdown_halt(False)
-            logger.info("Drawdown halt reset")
+            db.set_system_state("drawdown_halted", "false")
+            logger.info("Drawdown halt reset (persisted to DB)")
 
         if args.resolve_only:
             await loop.resolve_only()

@@ -257,6 +257,11 @@ class PolymarketExecutor:
         """Update total exposure from DB (called at startup)."""
         self._total_exposure = exposure
 
+    def release_exposure(self, amount: float) -> None:
+        """Decrement exposure when a position is closed or resolved."""
+        self._total_exposure = max(0, self._total_exposure - amount)
+        logger.debug(f"Exposure released: ${amount:.2f}, total now ${self._total_exposure:.2f}")
+
     # ── Safety Checks ────────────────────────────────────────────
 
     def _run_safety_checks(
