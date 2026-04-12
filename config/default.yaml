@@ -1,0 +1,95 @@
+# Mirofish Configuration
+# Copy to config/local.yaml and fill in your API keys.
+# local.yaml is gitignored — never commit secrets.
+
+# --- API Keys (REQUIRED) ---
+api_keys:
+  anthropic: ""          # Claude API key
+  openai: ""             # OpenAI API key (optional, for diversity)
+  polymarket_api_key: "" # Polymarket CLOB API key
+  polymarket_secret: ""  # Polymarket CLOB API secret
+  polymarket_passphrase: "" # Polymarket CLOB passphrase
+  news_api: ""           # News API key for RAG (Tavily, Serper, etc.)
+
+# --- Swarm Configuration ---
+swarm:
+  num_fish: 7                  # Number of Fish agents in the swarm
+  personas:                     # Diverse persona types for agent heterogeneity
+    - "geopolitical_analyst"
+    - "financial_quant"
+    - "bayesian_statistician"
+    - "investigative_journalist"
+    - "contrarian_thinker"
+    - "domain_expert"
+    - "calibration_specialist"
+  model: "claude-sonnet-4-6"   # Default LLM model for Fish agents
+  temperature: 0.7              # LLM temperature for diversity
+  max_concurrent: 5             # Max concurrent LLM calls (rate limiting)
+  timeout_seconds: 30           # Per-Fish analysis timeout
+
+# --- GOD Node ---
+god_node:
+  model: "claude-opus-4-6"     # GOD node uses strongest model
+  event_propagation: "broadcast" # broadcast | targeted | cascade
+  reanalysis_threshold: 0.15    # Min probability shift to trigger re-analysis
+
+# --- Market Data ---
+markets:
+  polymarket:
+    gamma_base_url: "https://gamma-api.polymarket.com"
+    clob_base_url: "https://clob.polymarket.com"
+    ws_url: "wss://ws-subscriptions-clob.polymarket.com/ws/market"
+    chain_id: 137               # Polygon mainnet
+    scan_interval_seconds: 30   # How often to scan for new markets
+    min_volume_usd: 10000       # Minimum volume filter
+    min_liquidity_usd: 5000     # Minimum liquidity filter
+
+# --- Semantic Analysis ---
+semantic:
+  embedding_model: "all-MiniLM-L6-v2"  # Sentence transformer model
+  similarity_threshold: 0.7             # Min cosine similarity for market linking
+  news_sources:
+    - "tavily"
+    - "serper"
+  rag:
+    chunk_size: 512
+    chunk_overlap: 50
+    collection_name: "market_news"
+
+# --- Network / Graph ---
+network:
+  divergence_metric: "js"       # js (Jensen-Shannon) or kl (Kullback-Leibler)
+  edge_threshold: 0.3           # Min divergence to create graph edge
+  update_interval_seconds: 300  # How often to rebuild correlation graph
+  centrality_metric: "betweenness" # betweenness | eigenvector | pagerank
+
+# --- Prediction / Calibration ---
+prediction:
+  aggregation: "bayesian_weighted" # bayesian_weighted | gedi | mean | median
+  calibration_method: "isotonic"   # isotonic | platt | temperature
+  min_history_for_calibration: 100 # Min resolved markets before calibrating
+  brier_score_target: 0.18         # Target Brier score (human superforecaster level)
+  confidence_threshold: 0.6        # Min confidence to generate trade signal
+
+# --- Risk Management ---
+risk:
+  kelly_fraction: 0.25          # Quarter-Kelly (conservative)
+  max_position_pct: 0.05        # Max 5% of bankroll per position
+  max_drawdown_pct: 0.15        # Stop trading if drawdown exceeds 15%
+  bankroll_usd: 1000            # Starting bankroll (paper trading default)
+  paper_trading: true           # SAFETY: paper trading by default
+
+# --- Visualization ---
+visualization:
+  dashboard_port: 8050
+  theme: "plotly_dark"
+  auto_refresh_seconds: 60
+  heatmap_colorscale: "RdYlGn"
+
+# --- Logging ---
+logging:
+  level: "INFO"                 # DEBUG | INFO | WARNING | ERROR
+  file: "logs/mirofish.log"
+  rotation: "10 MB"
+  retention: "30 days"
+  format: "{time:YYYY-MM-DD HH:mm:ss} | {level:<8} | {name}:{function}:{line} | {message}"
