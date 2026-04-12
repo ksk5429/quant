@@ -8,6 +8,7 @@
 |---|------|-------|---------|------|---------|---------|--------------|
 | [001](001_us_election_2028/) | 2026-04-12 | 2028 US Election | 15 | 3 (Geo, Quant, Contra) | 0 / 15 PASS | Correct PASS | All tail candidates; need higher-P markets |
 | [002](002_crypto_markets/) | 2026-04-12 | Crypto & BTC | 6 | 3 (Geo, Quant, Contra) | 5 / 6 actionable | **First signals** | GTA VI delay option; price-blinding worked; persona prompts matter |
+| [003](003_geopolitics/) | 2026-04-12 | Geopolitics | 11 | **5** (Geo, Quant, Contra, Journalist, Bayesian) | 9 / 11 actionable | **5-Fish swarm** | Causal chains; GTA VI premium quantified; narratives vs primary sources |
 
 ## Upcoming Exercises
 
@@ -22,10 +23,10 @@
 
 | Metric | Value |
 |--------|-------|
-| Total exercises | 2 |
-| Total markets analyzed | 21 |
-| Total Fish analyses | 63 |
-| Actionable signals | 5 |
+| Total exercises | 3 |
+| Total markets analyzed | 32 |
+| Total Fish analyses | 118 |
+| Actionable signals | 14 |
 | Trades executed | 0 (paper trading) |
 | Resolved predictions | 0 (awaiting resolution) |
 | Ensemble Brier score | N/A (no resolutions yet) |
@@ -36,8 +37,8 @@
 |----------|-----------------|
 | 001 | First run — established baseline workflow |
 | 002 | Price-blinding enforced, persona-specific prompts, higher-P markets (1.8-48.9%), first actionable signals generated |
-| 003 | (planned) Add debate rounds (Strategy C), use 5 Fish, add news/RAG context |
-| 004 | (planned) More Fish windows, domain expert Fish for economic data |
+| 003 | **5 Fish** (added Journalist + Bayesian), causal chain detection, narrative-vs-source divergence analysis |
+| 004 | (planned) Data-gathering Fish, debate rounds (Strategy C), 7+ Fish |
 
 ## Evolution Protocol
 
