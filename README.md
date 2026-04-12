@@ -8,7 +8,7 @@
 <a href="#retrodiction-baseline"><img src="https://img.shields.io/badge/Brier_Score-0.213-2196F3?style=for-the-badge" alt="Brier"></a>
 <a href="#retrodiction-baseline"><img src="https://img.shields.io/badge/Accuracy-73.3%25-4CAF50?style=for-the-badge" alt="Accuracy"></a>
 <a href="#zero-cost-architecture"><img src="https://img.shields.io/badge/Cost-$0.00/market-00C853?style=for-the-badge" alt="Cost"></a>
-<a href="#9-fish-personas"><img src="https://img.shields.io/badge/Fish_Agents-9_Personas-7C4DFF?style=for-the-badge" alt="Fish"></a>
+<a href="#fish-personas"><img src="https://img.shields.io/badge/Fish_Agents-9_Personas-7C4DFF?style=for-the-badge" alt="Fish"></a>
 <a href="docs/Literature_Review_Multi_Agent_LLM_Prediction_Markets.md"><img src="https://img.shields.io/badge/Literature-32_Sources-FF6D00?style=for-the-badge" alt="Lit"></a>
 </p>
 
@@ -21,19 +21,15 @@
 <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
 </p>
 
-<br/>
+<p align="center"><em>Named after the schooling behavior of fish — individually simple, collectively intelligent.</em></p>
 
-<blockquote>
-Named after the schooling behavior of fish — individually simple, collectively intelligent.
-</blockquote>
+---
 
 K-Fish deploys **9 LLM agents** ("Fish") that each use a structurally different reasoning framework to analyze prediction markets. Their independent probability estimates are fused through a **multi-round Delphi protocol**, calibrated with machine learning, and converted into risk-controlled positions using the **Kelly criterion**. The entire system runs at **zero cost** via Claude Code CLI.
 
 ---
 
-## Pipeline
-
-> Market → Route → Research → Delphi (multi-round) → Aggregate → Calibrate → Edge Detect → Kelly Size → Position
+## How It Works
 
 ```mermaid
 flowchart TD
@@ -90,27 +86,46 @@ flowchart TD
     F --> G --> H
 ```
 
-### 9 Fish in the Delphi Swarm
+---
+
+## Example Output
+
+> **Market:** *Will the Fed increase interest rates by 25+ bps after the March 2026 meeting?*
 
 ```mermaid
 graph LR
-    subgraph SWARM [" 9 Fish Agents — each with orthogonal reasoning "]
+    subgraph FISH [" 9 Fish Predictions "]
         direction LR
-        F1(("🎯<br/>Anchor<br/>0.72"))
-        F2(("🔀<br/>Decomp<br/>0.68"))
-        F3(("🔍<br/>Inside<br/>0.71"))
-        F4(("⚡<br/>Contra<br/>0.45"))
-        F5(("⏱️<br/>Temporal<br/>0.63"))
-        F6(("🏛️<br/>Institut<br/>0.67"))
-        F7(("💀<br/>Premort<br/>0.58"))
-        F8(("📐<br/>Calibr<br/>0.70"))
-        F9(("📊<br/>Bayes<br/>0.69"))
+        F1(("🎯<br/>Anchor<br/>0.20"))
+        F2(("🔀<br/>Decomp<br/>0.18"))
+        F3(("🔍<br/>Inside<br/>0.15"))
+        F4(("⚡<br/>Contra<br/>0.28"))
+        F5(("⏱️<br/>Tempo<br/>0.22"))
+        F6(("🏛️<br/>Instit<br/>0.17"))
+        F7(("💀<br/>Premrt<br/>0.25"))
+        F8(("📐<br/>Calibr<br/>0.19"))
+        F9(("📊<br/>Bayes<br/>0.16"))
     end
 ```
 
+| Stage | Value |
+|-------|-------|
+| Swarm raw average | 0.200 |
+| After extremization | 0.178 |
+| After calibration | 0.165 |
+| Market price | 0.22 |
+| Edge | 5.5% |
+| **Recommendation** | **NO POSITION** (edge below 7% threshold) |
+
+> **Actual outcome:** The Fed did not raise rates. K-Fish was correct (Brier = 0.027).
+
 ---
 
-## 9 Fish Personas
+## Fish Personas
+
+<details>
+<summary><strong>9 Fish — each with orthogonal reasoning</strong> (click to expand)</summary>
+<br/>
 
 Each persona encodes a **structurally different decomposition strategy** to maximize ensemble diversity ([Schoenegger et al., Science Advances 2024](https://doi.org/10.1126/sciadv.adp1528)).
 
@@ -125,6 +140,8 @@ Each persona encodes a **structurally different decomposition strategy** to maxi
 | 7 | **Premortem** | Failure scenario enumeration | Imagines why the expected outcome failed |
 | 8 | **Calibrator** | Tetlock superforecaster protocol | Base rate → evidence → incremental update → bias check |
 | 9 | **Bayesian Updater** | Explicit prior x likelihood | States prior, identifies evidence, applies Bayes' rule |
+
+</details>
 
 ---
 
@@ -143,7 +160,7 @@ Each persona encodes a **structurally different decomposition strategy** to maxi
 > On markets where the LLM has relevant knowledge (25/30), K-Fish achieves **Brier 0.073** — beating the Polymarket crowd (0.084). The overall gap is driven by 5 surprise events beyond the LLM training data cutoff.
 
 <details>
-<summary><strong>Per-Fish Performance Rankings</strong> (click to expand)</summary>
+<summary><strong>Per-Fish Performance Rankings</strong></summary>
 
 | Rank | Persona | Brier | Assessment |
 |:----:|---------|:-----:|------------|
@@ -158,6 +175,21 @@ Each persona encodes a **structurally different decomposition strategy** to maxi
 | 9 | Temporal | 0.239 | Timing analysis least effective persona |
 
 </details>
+
+---
+
+## What Makes K-Fish Different
+
+| | [ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) (43K stars) | [PolySwarm](https://arxiv.org/abs/2604.03888) | **K-Fish** |
+|---|---|---|---|
+| **Target** | Equities | Prediction markets | Prediction markets |
+| **Agents** | 18 (investor personas) | 50 (diverse personas) | 9 (orthogonal reasoning) |
+| **Calibration** | None | Confidence-weighted | netcal auto-select (Beta/Histogram/Isotonic) |
+| **Multi-round** | No | No | Yes (Delphi with convergence) |
+| **Pre-screen** | No | No | Yes (3-Fish filter for unknowable markets) |
+| **Cost** | API calls ($) | API calls ($) | **$0.00** (CLI mode) |
+| **Risk mgmt** | Position limits | Quarter-Kelly | Quarter-Kelly + GARCH volatility + drawdown circuit breaker |
+| **Validated** | Backtest only | Backtest only | Retrodiction on real resolved markets |
 
 ---
 
@@ -181,11 +213,32 @@ K-Fish runs entirely on the Claude Code CLI (`claude -p`), which uses the Max su
 git clone https://github.com/ksk5429/quant.git && cd quant
 pip install -e ".[dev]"
 pip install netcal scoringrules quantstats trafilatura statsforecast mlflow sentence-transformers
+```
 
+```bash
 # Scan live Polymarket markets
 python -m src.markets.scanner --min-volume 100000
+```
 
-# Run retrodiction (evaluate on resolved markets)
+<details>
+<summary><strong>Expected output</strong></summary>
+
+```
+MIROFISH MARKET SCAN — 2026-04-12 22:39
+Active markets scanned: 50
+
+Rank Score        Cat  Price       Vol($) Question
+   1  3.37    general   48%  10,976,062  Will Jesus Christ return before GTA VI?
+   2  3.32   politics   27%  22,267,744  Will Gavin Newsom win the 2028 Democratic...
+   3  3.32   politics   42%  11,871,967  Will J.D. Vance win the 2028 Republican...
+   4  3.30 geopolitics   38%  13,192,103  Iran x Israel/US conflict ends by April 7?
+   5  3.26 geopolitics   30%  14,068,338  Russia x Ukraine ceasefire by end of 2026?
+```
+
+</details>
+
+```bash
+# Run retrodiction (evaluate on 30 resolved markets)
 python -m src.prediction.run_retrodiction --n 30 --model haiku --concurrent 3
 
 # Run full live pipeline (scan → analyze → portfolio)
@@ -238,7 +291,8 @@ src/
 
 </details>
 
-### Module Dependency Graph
+<details>
+<summary><strong>Module Dependency Graph</strong> (click to expand)</summary>
 
 ```mermaid
 graph TD
@@ -287,9 +341,12 @@ graph TD
     style MARKET fill:#2d1f00,stroke:#d29922
 ```
 
+</details>
+
 ---
 
-## Key Design Decisions
+<details>
+<summary><strong>Key Design Decisions</strong> (click to expand)</summary>
 
 > [!IMPORTANT]
 > Every decision is grounded in peer-reviewed evidence or empirical retrodiction results.
@@ -304,12 +361,10 @@ graph TD
 | Auto-seeded calibrator | No uncalibrated cold start | Code review: calibration was always a no-op |
 | CLI over API | $0 vs $3-15/M tokens | Maximize predictions per dollar |
 
----
-
-## Libraries
+</details>
 
 <details>
-<summary><strong>Full Library Inventory</strong> (click to expand)</summary>
+<summary><strong>Libraries</strong> (click to expand)</summary>
 
 | Library | Purpose | Why This One |
 |---------|---------|-------------|
@@ -323,17 +378,6 @@ graph TD
 | [mapie](https://github.com/scikit-learn-contrib/MAPIE) | Conformal prediction | Coverage-guaranteed intervals |
 
 </details>
-
----
-
-## Data Assets
-
-| Dataset | Size | Records | Source |
-|---------|:----:|:-------:|--------|
-| Resolved markets | 2.7 MB | 2,500 | Polymarket Gamma API |
-| External dataset | 599 MB | 408,863 | [prediction-market-analysis](https://github.com/Jon-Becker/prediction-market-analysis) |
-| Retrodiction results | 250 KB | 30 evaluated | K-Fish CLI swarm |
-| Literature review | 32 PDFs | 32 papers | Academic databases |
 
 ---
 
@@ -358,11 +402,11 @@ graph TD
 graph TD
     P1["✅ <b>Phase 1</b> — Foundation<br/>Core engine · 45 tests · Literature review · Polymarket API"]
     P2["✅ <b>Phase 2</b> — Swarm Intelligence<br/>9 Fish personas · Multi-round Delphi · CLI execution"]
-    P3["✅ <b>Phase 3</b> — Calibration<br/>Retrodiction baseline (Brier 0.213) · netcal integration"]
+    P3["✅ <b>Phase 3</b> — Calibration<br/>Retrodiction baseline Brier 0.213 · netcal integration"]
     P4["✅ <b>Phase 4</b> — Risk Management<br/>Kelly sizing · Edge detection · Drawdown monitor · Monte Carlo"]
     P5["✅ <b>Phase 5</b> — Live Pipeline<br/>Market scanner · Live pipeline · SwarmRouter"]
     P6["🔄 <b>Phase 6</b> — Scale<br/>200+ market calibration · CLOB order execution · Dashboard"]
-    P7["⬜ <b>Phase 7</b> — Optimization<br/>Fine-tuned specialist Fish (GRPO) · Cross-platform arbitrage"]
+    P7["⬜ <b>Phase 7</b> — Optimization<br/>Fine-tuned specialist Fish via GRPO · Cross-platform arbitrage"]
 
     P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7
 
