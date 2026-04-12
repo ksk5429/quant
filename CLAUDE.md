@@ -8,34 +8,70 @@
 **AI System:** Claude Code (Opus 4.6)
 **Development Mode:** Vibe coding with structured human-AI collaboration
 
-## Architecture
+## Architecture (v4)
 
 ```
 src/
-  mirofish/      # Swarm engine: Fish agents, GOD node, MessageBus
-  semantic/      # Embeddings, similarity, LLM semantic analysis
-  markets/       # Polymarket Gamma/CLOB API clients
-  prediction/    # Bayesian aggregation, calibration, backtesting
-  network/       # Market correlation graph, divergence analysis
-  visualization/ # Plotly dashboards, heatmaps, network plots
-  risk/          # Kelly criterion, position sizing, drawdown limits
-  utils/         # Config loader, logging
+  mirofish/      # Swarm engine v4
+    engine_v4.py     # CANONICAL pipeline: Route→Research→Delphi→Calibrate→Kelly
+    llm_fish.py      # 9 personas, 4 backends (CLI/Ollama/Gemini/File)
+    researcher.py    # Context gathering Fish
+    swarm_router.py  # Adaptive routing + model competition
+    live_pipeline.py # Scanner → Engine → Portfolio → Report
+    ipc.py           # File-based distributed Fish protocol
+  prediction/    # Scoring & calibration
+    calibration.py       # netcal v2: Beta/Histogram/auto-select
+    advanced_scoring.py  # Brier decomposition, CRPS, conformal intervals
+    volatility.py        # GARCH regime detection
+    run_retrodiction.py  # CLI-based evaluation runner
+  risk/          # Position sizing
+    portfolio.py   # Edge detection, Kelly, drawdown monitor
+    analytics.py   # Sharpe/Sortino, Monte Carlo simulation
+  markets/       # Market data
+    polymarket.py  # Gamma + CLOB API
+    history.py     # Resolved market scraper (2,500 markets)
+    dataset.py     # External 408K market parquet loader
+    scanner.py     # Live market scanner + ranking
+  semantic/      # NLP
+    news_extractor.py  # trafilatura + sentence-transformers
+  utils/         # Infrastructure
+    cli.py         # Claude binary detection
+    experiment_tracker.py  # MLflow tracking
 ```
 
-## Running Tests
+## Running
 
 ```bash
-pytest tests/ -v
-pytest tests/unit/ -v --cov=src
+# Retrodiction (evaluate on resolved markets)
+python -m src.prediction.run_retrodiction --n 30 --model haiku --concurrent 3
+
+# Live market scan
+python -m src.markets.scanner --min-volume 100000
+
+# Live prediction pipeline
+python -m src.mirofish.live_pipeline --top 10 --model haiku
+
+# Scrape resolved markets
+python -m src.markets.history --limit 2500 --min-volume 5000
 ```
 
 ## Key Design Decisions
 
 1. **Market prices withheld during Fish analysis** — Preserves agent independence (PolySwarm methodology)
-2. **Bayesian confidence-weighted aggregation** — Not naive averaging (ref: Schoenegger et al. 2024)
-3. **Quarter-Kelly position sizing** — Conservative risk management (ref: Thorp, PolySwarm)
-4. **Isotonic regression calibration** — LLMs are overconfident (ref: Geng et al. NAACL 2024)
-5. **Semantic similarity graphs** — Topic similarity > price correlation (ref: Baaijens et al. 2025)
+2. **9 orthogonal personas** — Structural reasoning diversity > model diversity (Schoenegger et al. 2024)
+3. **Multi-round Delphi** — Fish see anonymized peer estimates, update until convergence
+4. **Asymmetric extremization** — Push away from 0.5, but less when Fish disagree (spread > 0.20)
+5. **3-Fish pre-screen** — Skip unknowable markets (all Fish near 0.50) to avoid Brier inflation
+6. **Calibrator auto-seeds from retrodiction** — No more uncalibrated cold starts
+7. **Quarter-Kelly sizing** — No confidence multiplier (removed as unjustified by Kelly theory)
+8. **Zero-cost CLI mode** — `claude -p` via Max subscription, $0 per prediction
+
+## Current Baseline (v4 retrodiction, 30 markets)
+
+- Brier: 0.213 (Polymarket crowd: 0.084, random: 0.250)
+- Accuracy: 73.3%
+- Best Fish: inside_view (0.182), contrarian (0.193), calibrator (0.196)
+- 200-market retrodiction running for calibrator training
 
 ## Execution Protocols
 

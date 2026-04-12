@@ -2,124 +2,79 @@
 
 **Swarm Intelligence Prediction Engine for Prediction Markets**
 
-Mirofish uses multiple AI agents — called **Fish** — to analyze prediction markets like [Polymarket](https://polymarket.com). Each Fish has a different analytical personality (geopolitical analyst, quant, contrarian, etc.), analyzes markets independently, then their predictions are fused using Bayesian statistics to produce calibrated probability estimates and trade signals.
+9 AI agents with orthogonal reasoning frameworks analyze prediction markets independently, then their estimates are fused through multi-round Delphi protocol, calibrated with netcal, and converted into Kelly-sized positions. Zero API cost — runs entirely on Claude Code CLI.
 
-> **Named after the schooling behavior of fish** — individually simple, collectively intelligent.
-
----
-
-## The Core Idea in 60 Seconds
-
-```
-  YOU drop a real-world event
-        |
-        v
-  +-----------+
-  | GOD Node  |  "Supreme Court blocks crypto regulation"
-  +-----------+
-        |
-        | broadcasts to all Fish
-        |
-   +----+----+----+----+----+
-   |    |    |    |    |    |
-   v    v    v    v    v    v
- [Geo] [Qnt] [Bay] [Jrn] [Con]    <-- 5 Fish with different worldviews
- 0.72  0.68  0.71  0.65  0.45     <-- Each estimates P(YES)
-   |    |    |    |    |    |
-   +----+----+----+----+----+
-        |
-        v
-  Bayesian Aggregation (confidence-weighted)
-  P_swarm = 0.67
-        |
-        v
-  Calibration (isotonic regression)
-  P_calibrated = 0.64
-        |
-        v
-  Kelly Criterion (quarter-Kelly)
-  "BUY YES, $32.00 (edge = +0.14)"
-```
-
-**Why this works:** An ensemble of 12 LLMs matches 925 human forecasters in accuracy ([Schoenegger et al., Science Advances 2024](https://doi.org/10.1126/sciadv.adp1528)). Diversity across agents — not model size — is what drives prediction quality.
+> Named after the schooling behavior of fish — individually simple, collectively intelligent.
 
 ---
 
-## How It Works (Step by Step)
-
-### Step 1: Market Discovery
-The system connects to Polymarket's API and fetches active markets with their current prices, volume, and metadata.
-
-### Step 2: Swarm Analysis
-Each Fish receives the market question **without seeing the current price** (to prevent anchoring bias). Every Fish applies its unique analytical lens:
-
-| Fish | Reasoning Framework | What It Does |
-|------|---------------------|--------------|
-| Base Rate Anchor | Reference class forecasting | Anchors on historical frequencies, adjusts minimally |
-| Decomposer | Sub-probability multiplication | Breaks question into independent sub-questions |
-| Inside View | Domain-specific evidence | Finds the single most informative fact others miss |
-| Contrarian | Consensus stress-testing | Constructs strongest case for the less popular outcome |
-| Temporal Analyst | Timing and momentum | Analyzes deadlines, hazard rates, trajectory |
-| Institutional Analyst | Organizational incentives | Weights institutional inertia and decision-maker incentives |
-| Premortem | Failure scenario enumeration | Imagines why the likely outcome didn't happen |
-| Calibrator | Tetlock superforecaster method | Base rate → evidence → incremental update → bias check |
-| Bayesian Updater | Explicit prior × likelihood | States prior, identifies evidence, applies Bayes' rule |
-
-### Step 3: Bayesian Aggregation
-Individual Fish predictions are combined using confidence-weighted fusion:
+## How It Works
 
 ```
-P_swarm = sum(confidence_i x accuracy_bonus_i x P_i) / sum(weights)
+Market Question (price withheld from agents)
+    |
+    v
+SwarmRouter ─── classifies: politics / crypto / sports / geopolitics
+    |            selects: persona set, round count, extremization factor
+    v
+Researcher Fish (sonnet) ─── gathers: base rates, key facts, contrarian case
+    |
+    v
+Multi-Round Delphi Protocol
+    Round 1: 9 Fish analyze independently
+    Round 2: Fish see anonymized peer median, update or hold
+    Round 3: repeat until std_dev < 0.03 or max rounds
+    |
+    v
+Aggregation ─── trimmed mean + confidence-weighted + asymmetric extremization
+    |                (extremize less when Fish disagree)
+    v
+Calibration ─── netcal auto-select (Beta / Histogram / Isotonic / Temperature)
+    |                seeded from retrodiction results on startup
+    v
+Edge Detection ─── |calibrated_prob - market_price| > 5% + 2% tx cost
+    |                    filter: confidence > 40%, spread < 35%
+    v
+Kelly Sizing ─── quarter-Kelly, 5% max per position, volatility-adjusted
+    |                 drawdown circuit breaker at 15%
+    v
+Position ─── side (YES/NO), size ($), expected value, reasoning chain
 ```
-
-Fish that are both **confident** and **historically accurate** get more influence. This is not simple averaging — it's learned weighting based on track record.
-
-### Step 4: Probability Calibration
-Raw LLM probabilities are systematically overconfident ([Geng et al., NAACL 2024](https://aclanthology.org/2024.naacl-long.366/)). We apply isotonic regression to map raw estimates to calibrated probabilities using historical resolution data.
-
-### Step 5: Trade Signal Generation
-The [Kelly Criterion](https://en.wikipedia.org/wiki/Kelly_criterion) determines optimal bet sizing:
-
-```
-edge = our_probability - market_price
-kelly_fraction = edge / (1 - market_price)
-position = kelly_fraction x 0.25 x confidence x bankroll
-```
-
-We use **quarter-Kelly** (conservative) with a 5% max position cap and 15% drawdown stop.
-
-### Step 6: Visualization
-Interactive Plotly dashboards show correlation heatmaps, network graphs, Fish agreement/disagreement, calibration diagrams, and PnL curves.
 
 ---
 
-## The Swarm Intelligence Architecture
+## 9 Fish Personas
 
-What makes Mirofish unique: each Fish agent runs as a **real, separate AI instance** in its own VS Code window. This isn't simulated multi-agent — it's actual parallel intelligence.
+Each persona encodes a structurally different reasoning framework — not just different domain knowledge — to maximize ensemble diversity.
 
-```
-QUANT/                              <- Master Intelligence (you + Claude)
-|
-+-- Swarm_Intelligence/
-|   +-- fish_geopolitical/          <- Open in VS Code #2
-|   +-- fish_quant/                 <- Open in VS Code #3
-|   +-- fish_contrarian/            <- Open in VS Code #4
-|   +-- fish_bayesian/              <- Open in VS Code #5
-|   +-- fish_journalist/            <- Open in VS Code #6
-|   +-- fish_domain_expert/         <- Open in VS Code #7
-|   +-- fish_calibrator/            <- Open in VS Code #8
-|
-+-- shared_state/                   <- Communication backbone
-|   +-- market_data/                <- Master writes: what to analyze
-|   +-- events/                     <- Master writes: real-world events
-|   +-- analyses/                   <- Each Fish writes: its analysis
-|   +-- signals/                    <- Fish-to-Fish: direct messages
-|   +-- consensus/                  <- Master writes: aggregated result
-|
-+-- src/                            <- Core engine (aggregation, calibration, risk)
-```
+| Fish | Method | Purpose |
+|------|--------|---------|
+| Base Rate Anchor | Reference class frequency | Prevents drift from statistical reality |
+| Decomposer | Sub-probability multiplication | Catches unlikely prerequisites |
+| Inside View | Domain-specific evidence | The single best fact others miss |
+| Contrarian | Consensus stress-testing | Finds where the crowd is wrong |
+| Temporal Analyst | Timing and momentum | Deadline analysis, hazard rates |
+| Institutional Analyst | Organizational incentives | Status quo and decision-maker constraints |
+| Premortem | Failure scenario enumeration | Counteracts planning fallacy |
+| Calibrator | Tetlock superforecaster protocol | Explicit bias checks and incremental updating |
+| Bayesian Updater | Prior x likelihood | Transparent, auditable reasoning |
 
-Fish communicate through JSON files in `shared_state/`. No sockets, no databases — just files that any human can read, inspect, and debug.
+---
+
+## Retrodiction Baseline
+
+30 resolved Polymarket markets, 9 Fish, Claude Haiku CLI, $0 cost:
+
+| Metric | Mirofish v4 | Polymarket Crowd | Random Baseline |
+|--------|------------|-----------------|-----------------|
+| Brier Score | 0.213 | 0.084 | 0.250 |
+| Accuracy | 73.3% | ~90% | 50% |
+| Cost per market | $0.00 | — | — |
+| Time per market | 135s | — | — |
+
+Best-performing Fish: Inside View (0.182), Contrarian (0.193), Calibrator (0.196).
+
+The gap to the Polymarket crowd is driven by 5 surprise events beyond the LLM knowledge cutoff. On the remaining 25 markets, Mirofish achieves Brier 0.073 (beats crowd).
 
 ---
 
@@ -127,7 +82,7 @@ Fish communicate through JSON files in `shared_state/`. No sockets, no databases
 
 ### Prerequisites
 - Python 3.11+
-- [Anthropic API key](https://console.anthropic.com/settings/keys) (for Claude-powered Fish)
+- Claude Code CLI (Max subscription for zero-cost operation)
 
 ### Installation
 
@@ -135,145 +90,133 @@ Fish communicate through JSON files in `shared_state/`. No sockets, no databases
 git clone https://github.com/ksk5429/quant.git
 cd quant
 pip install -e ".[dev]"
+pip install netcal scoringrules quantstats trafilatura statsforecast mlflow sentence-transformers
 ```
 
-### Setup API Keys
+### Zero-Cost CLI Mode
+
+No API key needed. Uses your Claude Code Max subscription:
 
 ```bash
-python setup.py          # Interactive setup (recommended)
-# OR
-export ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+# Run retrodiction on 30 resolved markets
+python -m src.prediction.run_retrodiction --n 30 --model haiku --concurrent 3
+
+# Scrape resolved markets for calibration corpus
+python -m src.markets.history --limit 2500 --min-volume 5000
 ```
 
-### Run the Demo
+### API Mode (Optional)
+
+For API-based execution, configure keys:
 
 ```bash
-# Stub mode (no API key needed — tests the full pipeline)
-python demo_live.py --stub --markets 5
-
-# Live mode (requires Anthropic API key)
-python demo_live.py --markets 5 --fish 5
-
-# Custom model (Haiku is cheapest, Sonnet is best)
-python demo_live.py --model claude-sonnet-4-6 --markets 3
-```
-
-### Run Tests
-
-```bash
-pytest tests/ -v              # All 45 tests
-pytest tests/ -v --cov=src    # With coverage
+cp config/default.yaml config/local.yaml
+# Edit config/local.yaml with your API keys
 ```
 
 ---
 
-## Project Structure
+## Architecture
 
 ```
-quant/
-+-- src/
-|   +-- mirofish/                # Swarm engine (v4)
-|   |   +-- engine_v4.py        #   Full pipeline: Route→Research→Delphi→Calibrate→Kelly
-|   |   +-- llm_fish.py         #   9 personas, 4 backends (CLI/Ollama/Gemini/File)
-|   |   +-- researcher.py       #   Context gathering Fish (sonnet)
-|   |   +-- swarm_router.py     #   Adaptive routing + model competition
-|   |   +-- ipc.py              #   File-based IPC for distributed Fish
-|   |   +-- swarm.py            #   Swarm orchestrator
-|   |   +-- god_node.py         #   Event injection + impact analysis
-|   |   +-- message_bus.py      #   Inter-agent communication
-|   +-- prediction/              # Scoring & calibration
-|   |   +-- calibration.py      #   v2: netcal (Beta/Histogram/auto-select) + CRPS
-|   |   +-- advanced_scoring.py #   Brier decomposition, conformal intervals
-|   |   +-- volatility.py       #   GARCH regime detection, Kelly adjustment
-|   |   +-- run_retrodiction.py #   Evaluation runner (CLI mode)
-|   +-- risk/                    # Position sizing & risk
-|   |   +-- portfolio.py        #   Edge detection, Kelly, drawdown monitor
-|   |   +-- analytics.py        #   Sharpe/Sortino, Monte Carlo simulation
-|   +-- markets/                 # Market data
-|   |   +-- polymarket.py       #   Gamma + CLOB API clients
-|   |   +-- history.py          #   Resolved market scraper (2,500 markets)
-|   |   +-- dataset.py          #   External 408K market parquet loader
-|   +-- semantic/                # NLP & information
-|   |   +-- analyzer.py         #   Embeddings, similarity analysis
-|   |   +-- news_extractor.py   #   trafilatura + sentence-transformers
-|   +-- network/                 # Graph analysis
-|   |   +-- market_graph.py     #   Correlation graph, centrality
-|   +-- utils/                   # Infrastructure
-|       +-- cli.py              #   Claude binary detection (cross-platform)
-|       +-- experiment_tracker.py # MLflow tracking
-|       +-- config.py           #   YAML config loader
-+-- Swarm_Intelligence/          # Fish agent workspaces
-+-- shared_state/                # Inter-agent file-based communication
-+-- data/                        # Datasets and results (gitignored)
-+-- literature_review/           # 32 academic sources + review article
-+-- docs/                        # Documentation
-+-- tests/                       # Test suite
-+-- config/                      # YAML configuration
+src/
+├── mirofish/                 # Swarm Engine
+│   ├── engine_v4.py         # Full pipeline (canonical)
+│   ├── llm_fish.py          # 9 personas, 4 backends (CLI/Ollama/Gemini/File)
+│   ├── researcher.py        # Context gathering (base rates, facts, contrarian case)
+│   ├── swarm_router.py      # Adaptive routing + model competition + safety mode
+│   ├── ipc.py               # File-based IPC for distributed Fish
+│   ├── swarm.py             # Swarm orchestration
+│   ├── god_node.py          # Event injection
+│   └── message_bus.py       # Inter-agent communication
+├── prediction/               # Scoring and Calibration
+│   ├── calibration.py       # netcal v2: Beta/Histogram/Isotonic/auto-select + CRPS
+│   ├── advanced_scoring.py  # Brier decomposition, conformal intervals
+│   ├── volatility.py        # GARCH regime detection, Kelly adjustment
+│   └── run_retrodiction.py  # CLI-based evaluation on resolved markets
+├── risk/                     # Position Sizing
+│   ├── portfolio.py         # Edge detection, Kelly sizing, drawdown monitor
+│   └── analytics.py         # Sharpe/Sortino/Calmar, Monte Carlo simulation
+├── markets/                  # Market Data
+│   ├── polymarket.py        # Gamma API (metadata) + CLOB API (trading)
+│   ├── history.py           # Resolved market scraper with retry logic
+│   └── dataset.py           # 408K market parquet loader (DuckDB)
+├── semantic/                 # NLP
+│   ├── analyzer.py          # Embedding similarity, market clustering
+│   └── news_extractor.py    # trafilatura article extraction + semantic matching
+├── network/                  # Graph Analysis
+│   └── market_graph.py      # Cross-market correlation, centrality
+└── utils/
+    ├── cli.py               # Cross-platform Claude binary detection
+    ├── experiment_tracker.py # MLflow experiment tracking
+    ├── config.py            # YAML configuration loader
+    └── logging.py           # Structured logging (loguru)
 ```
-
-## v4 Retrodiction Baseline (Real Data)
-
-30 resolved Polymarket markets evaluated with 9 Fish personas using Claude Haiku CLI:
-
-| Metric | Mirofish | Polymarket Crowd | Random |
-|--------|----------|-----------------|--------|
-| Brier Score | 0.213 | 0.084 | 0.250 |
-| Accuracy | 73.3% | ~90% | 50% |
-| Cost | $0.00 | — | — |
 
 ---
 
-## Documentation
+## Key Design Decisions
 
-| Document | What It Covers |
-|----------|----------------|
-| [Technical Details](docs/TECHNICAL_DETAILS.md) | Full system architecture, data flow, API integration, implementation details |
-| [Mathematical Foundations](docs/MATHEMATICAL_FOUNDATIONS.md) | All math explained: Bayesian aggregation, Kelly criterion, calibration, divergence metrics |
-| [User Manual](docs/USER_MANUAL.md) | Step-by-step guide: setup, running Fish, interpreting results, common workflows |
-| [Swarm Protocol](docs/SWARM_PROTOCOL.md) | How Fish agents communicate, the tiered pipeline, debate rounds, routing |
-| [Glossary](docs/GLOSSARY.md) | Every term defined — prediction markets, Brier scores, Kelly criterion, etc. |
-| [System Design](docs/architecture/system_design.md) | Architecture diagrams and data flow |
-| [Literature Review](literature_review/annotated_bibliography.md) | 26 peer-reviewed references with annotations |
-| [Developer Notes](docs/DEVELOPERS_NOTE.md) | Design decisions and rationale |
+| Decision | Rationale | Evidence |
+|----------|-----------|----------|
+| 9 orthogonal personas over model diversity | Structural reasoning diversity drives ensemble accuracy | Schoenegger et al., Science Advances 2024 |
+| Market prices withheld during Fish analysis | Prevents anchoring, preserves independence | PolySwarm methodology (arXiv:2604.03888) |
+| Asymmetric extremization | Extremize less when Fish disagree (high spread = uncertain direction) | Tetlock recalibration + retrodiction analysis |
+| 3-Fish pre-screen | Skip unknowable markets to avoid guaranteed-bad predictions | 5 catastrophic misses in baseline caused by LLM knowledge cutoff |
+| Quarter-Kelly sizing | Full Kelly has ~25% drawdowns; 0.25x reduces volatility 4x | Kelly 1956, Thorp 1962, PolySwarm |
+| Calibrator auto-seeded from retrodiction | Eliminates uncalibrated cold start on every restart | Code review finding: calibration was always a no-op |
+| CLI mode (claude -p) over API calls | $0 cost via Max subscription vs $3-15/M tokens API pricing | Practical constraint: maximize runs per dollar |
+
+---
+
+## Data Assets
+
+| Dataset | Size | Records | Source |
+|---------|------|---------|--------|
+| Resolved markets (our scrape) | 2.7 MB | 2,500 markets | Polymarket Gamma API |
+| External dataset (parquet) | 599 MB | 408,863 markets | Jon-Becker/prediction-market-analysis |
+| Retrodiction results | 250 KB | 30 evaluated markets | CLI Fish swarm |
+
+---
+
+## Libraries
+
+| Library | Version | Used For |
+|---------|---------|----------|
+| netcal | 1.3.6 | Beta calibration, histogram binning, ECE/MCE metrics |
+| scoringrules | 0.9.0 | CRPS scoring for distributional evaluation |
+| quantstats | 0.0.81 | Portfolio tearsheets, Sharpe/Sortino analysis |
+| trafilatura | 2.0.0 | News article extraction (0.958 F1) |
+| sentence-transformers | 5.4.0 | Semantic embeddings for market similarity |
+| statsforecast | 2.0.3 | GARCH/ARCH volatility modeling |
+| mlflow | 3.11.1 | Experiment tracking and model registry |
+| mapie | 1.3.0 | Conformal prediction intervals |
 
 ---
 
 ## Research Foundation
 
-Every algorithmic decision is grounded in peer-reviewed research. No hallucinated references — every citation has a real DOI or arXiv ID.
-
 | Claim | Evidence |
 |-------|----------|
-| LLM ensembles match human crowds | [Schoenegger et al., Science Advances 2024](https://doi.org/10.1126/sciadv.adp1528) |
-| Retrieval-augmented LLMs approach superforecasters | [Halawi et al., NeurIPS 2024](https://arxiv.org/abs/2402.18563) |
-| Swarm + Bayesian aggregation is SOTA for Polymarket | [PolySwarm, arXiv:2604.03888](https://arxiv.org/abs/2604.03888) |
-| RLHF models are overconfident, need calibration | [Geng et al., NAACL 2024](https://aclanthology.org/2024.naacl-long.366/) |
-| $40M arbitrage on Polymarket via semantic matching | [Saguillo et al., AFT 2025](https://arxiv.org/abs/2504.00000) |
-| Semantic similarity graphs outperform price correlation | [Baaijens et al., Applied Network Science 2025](https://doi.org/10.1007/s41109-025-00755-2) |
-| Quarter-Kelly is optimal for prediction markets | [Kelly 1956](https://doi.org/10.1002/j.1538-7305.1956.tb03809.x), [Thorp 1962](https://en.wikipedia.org/wiki/Beat_the_Dealer) |
+| LLM ensembles match human crowds | Schoenegger et al., Science Advances 2024 |
+| Retrieval-augmented LLMs approach superforecasters | Halawi et al., NeurIPS 2024 |
+| Swarm + Bayesian aggregation is SOTA for Polymarket | PolySwarm, arXiv:2604.03888 |
+| RLHF models are overconfident, need calibration | Geng et al., NAACL 2024 |
+| Semantic similarity outperforms price correlation | Baaijens et al., Applied Network Science 2025 |
+| Quarter-Kelly is optimal for prediction markets | Kelly 1956, Thorp 1962 |
 
-Full bibliography: [literature_review/annotated_bibliography.md](literature_review/annotated_bibliography.md)
-
----
-
-## Human-AI Collaboration
-
-This project is built through structured human-AI interaction:
-
-- **Human provides**: Domain knowledge, strategy decisions, risk tolerance, event detection
-- **AI provides**: Data fetching, probability computation, aggregation math, visualization
-- **Shared**: Market selection, architecture decisions, feature priorities
-
-The [Human Worksheet](docs/worksheets/mirofish_human_worksheet.docx) (DOCX) contains 11 sections for the human operator to fill out, covering strategy, domain knowledge, risk parameters, and learning goals.
+Full literature review: [docs/Literature_Review_Multi_Agent_LLM_Prediction_Markets.docx](docs/Literature_Review_Multi_Agent_LLM_Prediction_Markets.docx)
 
 ---
 
 ## Roadmap
 
-- [x] **Phase 1: Foundation** — Core engine, 45 tests, literature review, Polymarket API
-- [ ] **Phase 2: Intelligence** — Live Claude Fish, tiered swarm pipeline, debate rounds
-- [ ] **Phase 3: Calibration** — Historical backtesting, learned calibration, performance tracking
-- [ ] **Phase 4: Production** — Real-time dashboard, portfolio management, live signals
+- [x] Phase 1: Foundation — core engine, tests, literature review, Polymarket API
+- [x] Phase 2: Swarm Intelligence — 9 Fish personas, multi-round Delphi, CLI execution
+- [x] Phase 3: Calibration — retrodiction baseline (Brier 0.213), netcal integration
+- [x] Phase 4: Risk — Kelly sizing, edge detection, drawdown monitor, Monte Carlo
+- [ ] Phase 5: Live Pipeline — real-time market scanning, position tracking, P&L
+- [ ] Phase 6: Scale — 200+ market calibration, CLOB order execution, dashboard
 
 ---
 
@@ -283,4 +226,4 @@ MIT
 
 ## Disclaimer
 
-This is a research and educational tool. Prediction market trading involves financial risk. The system uses paper trading by default — live trading requires explicit human approval. Past performance does not guarantee future results. Use at your own risk.
+Research and educational tool. Prediction market trading involves financial risk. Paper trading is the default — live trading requires explicit human approval. Past performance does not guarantee future results.
