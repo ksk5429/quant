@@ -32,13 +32,72 @@ K-Fish deploys 9 LLM agents ("Fish") that each use a **structurally different re
 
 ## Pipeline
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/pipeline_diagram.png">
-    <source media="(prefers-color-scheme: light)" srcset="docs/pipeline_diagram_light.png">
-    <img alt="K-Fish Pipeline" src="docs/pipeline_diagram.png" width="700">
-  </picture>
-</p>
+```mermaid
+flowchart TD
+    A["<b>MARKET QUESTION</b><br/>price withheld from all Fish agents"]
+    B["<b>SWARM ROUTER</b><br/>classifies category · selects personas · sets rounds · sets extremization"]
+    C["<b>RESEARCHER FISH</b><br/>gathers base rates · key facts · timing analysis · contrarian case"]
+
+    subgraph DELPHI ["MULTI-ROUND DELPHI PROTOCOL"]
+        direction TB
+        R1["<b>Round 1</b><br/>Independent"]
+        R2["<b>Round 2</b><br/>Peer Context"]
+        RN["<b>Round N</b><br/>Converge"]
+        R1 -->|"anonymized<br/>estimates"| R2 -->|"update or<br/>hold"| RN
+
+        subgraph FISH ["9 Fish Agents"]
+            direction LR
+            F1(("ANC<br/>0.72"))
+            F2(("DEC<br/>0.68"))
+            F3(("INS<br/>0.71"))
+            F4(("CON<br/>0.45"))
+            F5(("TMP<br/>0.63"))
+            F6(("IST<br/>0.67"))
+            F7(("PRE<br/>0.58"))
+            F8(("CAL<br/>0.70"))
+            F9(("BAY<br/>0.69"))
+        end
+    end
+
+    D["<b>AGGREGATION</b><br/>trimmed mean · confidence-weighted · asymmetric extremization"]
+
+    E1["<b>CALIBRATE</b><br/>netcal auto-select<br/>Beta · Histogram · Isotonic"]
+    E2["<b>VOLATILITY</b><br/>GARCH regime detection<br/>Kelly adjustment factor"]
+    E3["<b>CONFORMAL</b><br/>90% coverage interval<br/>prediction bounds"]
+
+    F["<b>EDGE DETECTION</b><br/>|calibrated − market_price| &gt; 7% · confidence &gt; 40% · spread &lt; 35%"]
+    G["<b>KELLY SIZING</b><br/>quarter-Kelly · 5% max/position · 30% max exposure · 15% drawdown stop"]
+    H["<b>POSITION</b><br/>side (YES / NO) · size ($) · expected value · reasoning chain"]
+
+    A --> B --> C --> DELPHI --> D
+    D --> E1 & E2 & E3
+    E1 & E2 & E3 --> F --> G --> H
+
+    style A fill:#1a1a2e,stroke:#c9d1d9,color:#c9d1d9
+    style B fill:#2d1f00,stroke:#d29922,color:#d29922
+    style C fill:#1f0038,stroke:#bc8cff,color:#bc8cff
+    style DELPHI fill:#0a1929,stroke:#1f6feb,color:#1f6feb
+    style FISH fill:#0d1520,stroke:#1f6feb,color:#58a6ff
+    style R1 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style R2 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style RN fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F1 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F2 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F3 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F4 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F5 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F6 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F7 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F8 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style F9 fill:#0d1929,stroke:#1f6feb,color:#58a6ff
+    style D fill:#0a2910,stroke:#3fb950,color:#3fb950
+    style E1 fill:#0a1929,stroke:#58a6ff,color:#58a6ff
+    style E2 fill:#2d1f00,stroke:#d29922,color:#d29922
+    style E3 fill:#1f0038,stroke:#bc8cff,color:#bc8cff
+    style F fill:#2d1f00,stroke:#d29922,color:#d29922
+    style G fill:#2a0a0a,stroke:#f85149,color:#f85149
+    style H fill:#0a2910,stroke:#3fb950,color:#3fb950
+```
 
 ---
 
