@@ -1,8 +1,8 @@
-# CLAUDE.md — Mirofish Prediction Engine
+# CLAUDE.md — K-Fish Prediction Engine
 
 ## Project Identity
 
-**Mirofish** is a swarm intelligence prediction engine for prediction markets. It uses multiple LLM agents ("Fish") organized in a swarm to analyze markets, detect cross-market correlations, and produce calibrated probability estimates.
+**K-Fish** is a swarm intelligence prediction engine for prediction markets. It uses multiple LLM agents ("Fish") organized in a swarm to analyze markets, detect cross-market correlations, and produce calibrated probability estimates.
 
 **Human Lead:** Kyeong Sun Kim (KSK)
 **AI System:** Claude Code (Opus 4.6)
@@ -12,7 +12,7 @@
 
 ```
 src/
-  mirofish/      # Swarm engine v4
+  mirofish/     # Swarm engine v4 (K-Fish core)
     engine_v4.py     # CANONICAL pipeline: Route→Research→Delphi→Calibrate→Kelly
     llm_fish.py      # 9 personas, 4 backends (CLI/Ollama/Gemini/File)
     researcher.py    # Context gathering Fish

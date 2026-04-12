@@ -1,8 +1,8 @@
-# System Design: Mirofish Prediction Engine
+# System Design: K-Fish Prediction Engine
 
 ## Overview
 
-Mirofish is a multi-agent LLM system for prediction market analysis. The system uses swarm intelligence — multiple diverse AI agents independently analyzing markets, then aggregating their predictions through Bayesian consensus.
+K-Fish is a multi-agent LLM system for prediction market analysis. The system uses swarm intelligence — multiple diverse AI agents independently analyzing markets, then aggregating their predictions through Bayesian consensus.
 
 ## Core Insight
 

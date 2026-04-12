@@ -1,4 +1,4 @@
-# Mirofish
+# K-Fish
 
 **Swarm Intelligence Prediction Engine for Prediction Markets**
 
@@ -65,7 +65,7 @@ Each persona encodes a structurally different reasoning framework — not just d
 
 30 resolved Polymarket markets, 9 Fish, Claude Haiku CLI, $0 cost:
 
-| Metric | Mirofish v4 | Polymarket Crowd | Random Baseline |
+| Metric | K-Fish v4 | Polymarket Crowd | Random Baseline |
 |--------|------------|-----------------|-----------------|
 | Brier Score | 0.213 | 0.084 | 0.250 |
 | Accuracy | 73.3% | ~90% | 50% |
@@ -74,7 +74,7 @@ Each persona encodes a structurally different reasoning framework — not just d
 
 Best-performing Fish: Inside View (0.182), Contrarian (0.193), Calibrator (0.196).
 
-The gap to the Polymarket crowd is driven by 5 surprise events beyond the LLM knowledge cutoff. On the remaining 25 markets, Mirofish achieves Brier 0.073 (beats crowd).
+The gap to the Polymarket crowd is driven by 5 surprise events beyond the LLM knowledge cutoff. On the remaining 25 markets, K-Fish achieves Brier 0.073 (beats crowd).
 
 ---
 
@@ -120,7 +120,7 @@ cp config/default.yaml config/local.yaml
 
 ```
 src/
-├── mirofish/                 # Swarm Engine
+├── mirofish/                # Swarm Engine (K-Fish core)
 │   ├── engine_v4.py         # Full pipeline (canonical)
 │   ├── llm_fish.py          # 9 personas, 4 backends (CLI/Ollama/Gemini/File)
 │   ├── researcher.py        # Context gathering (base rates, facts, contrarian case)

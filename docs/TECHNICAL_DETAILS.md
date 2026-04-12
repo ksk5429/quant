@@ -1,6 +1,6 @@
 # Technical Details
 
-> Complete technical documentation of the Mirofish prediction engine.
+> Complete technical documentation of the K-Fish prediction engine.
 
 ## Table of Contents
 1. [System Overview](#system-overview)
@@ -17,7 +17,7 @@
 
 ## System Overview
 
-Mirofish is a **six-layer prediction pipeline**:
+K-Fish is a **six-layer prediction pipeline**:
 
 ```
 Layer 1: DATA         Polymarket Gamma/CLOB API -> market questions, prices, volume

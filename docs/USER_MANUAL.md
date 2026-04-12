@@ -1,6 +1,6 @@
 # User Manual
 
-> Step-by-step guide for operating the Mirofish prediction engine.
+> Step-by-step guide for operating the K-Fish prediction engine.
 
 ## Table of Contents
 1. [Getting Started](#1-getting-started)

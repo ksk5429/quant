@@ -1,6 +1,6 @@
 # Shared State — Inter-Agent Communication Layer
 
-This directory is the communication backbone of the Mirofish swarm. All Fish agents and the Master Intelligence read from and write to this directory.
+This directory is the communication backbone of the K-Fish swarm. All Fish agents and the Master Intelligence read from and write to this directory.
 
 ## Directory Structure
 

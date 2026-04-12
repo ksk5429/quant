@@ -9,7 +9,7 @@
 This document is designed for **team meetings and brainstorming sessions**. Each topic follows the same format:
 
 1. **The Question** — What problem are we trying to solve?
-2. **Current Status** — What exists today in Mirofish?
+2. **Current Status** — What exists today in K-Fish?
 3. **Proposed Approaches** — Concrete options to discuss
 4. **Discussion Prompts** — Questions to drive the meeting conversation
 5. **Reading Material** — Papers and resources to review beforehand
@@ -347,7 +347,7 @@ What are the ethical and legal boundaries of AI-powered prediction market tradin
 ## Topic 10: Long-Term Vision
 
 ### The Question
-Where is Mirofish in 1 year? 3 years? 5 years?
+Where is K-Fish in 1 year? 3 years? 5 years?
 
 ### Discussion Prompts
 1. **1 year:** A profitable, semi-autonomous system with proven calibration on 500+ markets?
@@ -365,7 +365,7 @@ Where is Mirofish in 1 year? 3 years? 5 years?
 ### The Insight
 > "First pass of fish is expensive. Sequential and depth. Events or price spikes will be a separate flow that works on a subset of data. Think opus vs sonnet vs haiku. You need expensive first pass to understand and generate the graph. But after that you may not need as many fish running. Only diff based."
 
-This is the single most important architectural evolution for Mirofish. It transforms the system from "run everything every time" to "build understanding once, update incrementally."
+This is the single most important architectural evolution for K-Fish. It transforms the system from "run everything every time" to "build understanding once, update incrementally."
 
 ### Proposed Architecture: Full Pass + Differential Updates
 

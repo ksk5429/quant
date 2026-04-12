@@ -3,7 +3,7 @@
 ## Session 2026-04-12: Project Genesis
 
 ### What Was Built
-Mirofish prediction engine — complete foundation from zero to 45 passing tests.
+K-Fish prediction engine — complete foundation from zero to 45 passing tests.
 
 ### Architecture Decisions
 
@@ -26,5 +26,5 @@ Mirofish prediction engine — complete foundation from zero to 45 passing tests
 - Geng et al. (NAACL 2024) — calibration is mandatory
 
 ### What's Next
-See the human worksheet at `docs/worksheets/mirofish_human_worksheet.docx`.
+See the human worksheet at `docs/worksheets/K-Fish_human_worksheet.docx`.
 The human needs to fill out Sections 1-8 before the AI can optimize the system.

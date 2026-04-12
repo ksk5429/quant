@@ -1,12 +1,12 @@
 # Glossary
 
-> Every term used in Mirofish, defined for newcomers.
+> Every term used in K-Fish, defined for newcomers.
 
 ---
 
 ## A
 
-**Aggregation** — Combining multiple probability estimates into a single consensus prediction. Mirofish uses Bayesian confidence-weighted aggregation, not simple averaging.
+**Aggregation** — Combining multiple probability estimates into a single consensus prediction. K-Fish uses Bayesian confidence-weighted aggregation, not simple averaging.
 
 **Arbitrage** — Exploiting price discrepancies between related markets for risk-free profit. On Polymarket, two types exist: intra-market (YES + NO prices don't sum to $1) and inter-market (semantically related markets are mispriced relative to each other).
 
@@ -28,7 +28,7 @@
 
 ## D
 
-**Drawdown** — The peak-to-trough decline in portfolio value. If your bankroll goes from $1,200 to $900, the drawdown is 25%. Mirofish stops trading at 15% drawdown.
+**Drawdown** — The peak-to-trough decline in portfolio value. If your bankroll goes from $1,200 to $900, the drawdown is 25%. K-Fish stops trading at 15% drawdown.
 
 **Divergence** — A measure of difference between probability distributions. Jensen-Shannon divergence is used to detect cross-market mispricing.
 
@@ -38,11 +38,11 @@
 
 **Edge** — The difference between our predicted probability and the market price. Edge > 0.05 = potentially profitable trade.
 
-**Ensemble** — A collection of models (Fish) whose combined prediction is more accurate than any individual model. The core principle behind Mirofish.
+**Ensemble** — A collection of models (Fish) whose combined prediction is more accurate than any individual model. The core principle behind K-Fish.
 
 ## F
 
-**Fish** — An individual LLM agent in the Mirofish swarm. Each Fish has a unique persona (geopolitical analyst, quant, contrarian, etc.) and produces independent probability estimates.
+**Fish** — An individual LLM agent in the K-Fish swarm. Each Fish has a unique persona (geopolitical analyst, quant, contrarian, etc.) and produces independent probability estimates.
 
 ## G
 
@@ -54,7 +54,7 @@
 
 **Implied Probability** — The probability embedded in a market price. A YES price of $0.65 implies a 65% chance of the event occurring.
 
-**Isotonic Regression** — A non-parametric calibration method that fits a monotonically increasing function from predicted probabilities to observed frequencies. The default calibration method in Mirofish.
+**Isotonic Regression** — A non-parametric calibration method that fits a monotonically increasing function from predicted probabilities to observed frequencies. The default calibration method in K-Fish.
 
 ## J
 
@@ -62,17 +62,17 @@
 
 ## K
 
-**Kelly Criterion** — A formula for optimal bet sizing that maximizes long-run wealth growth. f* = edge / (1 - price) for YES bets. Mirofish uses quarter-Kelly (0.25x) for safety.
+**Kelly Criterion** — A formula for optimal bet sizing that maximizes long-run wealth growth. f* = edge / (1 - price) for YES bets. K-Fish uses quarter-Kelly (0.25x) for safety.
 
 ## L
 
-**LLM** — Large Language Model. AI models like Claude or GPT that understand and generate text. In Mirofish, LLMs power the Fish agents for semantic market analysis.
+**LLM** — Large Language Model. AI models like Claude or GPT that understand and generate text. In K-Fish, LLMs power the Fish agents for semantic market analysis.
 
 ## M
 
 **MessageBus** — The internal communication system for Fish agents. Supports broadcast (all Fish), targeted (specific Fish), and topic-based routing.
 
-**Mirofish** — The complete swarm intelligence prediction engine. Named after the schooling behavior of fish.
+**K-Fish** — The complete swarm intelligence prediction engine. Named after the schooling behavior of fish.
 
 ## N
 
@@ -80,7 +80,7 @@
 
 ## P
 
-**Paper Trading** — Simulated trading without real money. Mirofish defaults to paper trading mode. Live trading requires explicit human approval.
+**Paper Trading** — Simulated trading without real money. K-Fish defaults to paper trading mode. Live trading requires explicit human approval.
 
 **Persona** — The analytical personality assigned to a Fish agent. Seven personas exist: geopolitical analyst, financial quant, Bayesian statistician, investigative journalist, contrarian thinker, domain expert, calibration specialist.
 
@@ -104,7 +104,7 @@
 
 **Spread** — In the swarm context: the difference between the highest and lowest Fish predictions. High spread = disagreement = lower confidence.
 
-**Swarm Intelligence** — The collective behavior of decentralized, self-organized agents. In Mirofish, multiple Fish agents with diverse perspectives produce predictions that are more accurate than any single agent.
+**Swarm Intelligence** — The collective behavior of decentralized, self-organized agents. In K-Fish, multiple Fish agents with diverse perspectives produce predictions that are more accurate than any single agent.
 
 ## T
 
@@ -114,4 +114,4 @@
 
 ## V
 
-**Vibe Coding** — A development approach where the human provides high-level direction and the AI writes the code. The approach used to build Mirofish.
+**Vibe Coding** — A development approach where the human provides high-level direction and the AI writes the code. The approach used to build K-Fish.

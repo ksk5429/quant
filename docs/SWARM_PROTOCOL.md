@@ -4,7 +4,7 @@
 
 ## Overview
 
-Mirofish uses a **hybrid Strategy A + C architecture**: a tiered pipeline (Trading Floor) with adversarial debate rounds (Debate Tournament) at the analysis tier.
+K-Fish uses a **hybrid Strategy A + C architecture**: a tiered pipeline (Trading Floor) with adversarial debate rounds (Debate Tournament) at the analysis tier.
 
 ```
 TIER 1: RESEARCH         Gather data, news, context
@@ -241,7 +241,7 @@ Master re-aggregates with the new analyses.
 # Fish: [Name]
 
 ## Identity
-You are a **[role]** Fish agent in the Mirofish swarm.
+You are a **[role]** Fish agent in the K-Fish swarm.
 
 ## Persona
 - [Key analytical trait 1]

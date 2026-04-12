@@ -1,6 +1,6 @@
 # Mathematical Foundations
 
-> Every equation used in Mirofish, explained step by step.
+> Every equation used in K-Fish, explained step by step.
 
 ## Table of Contents
 1. [Probability Basics](#1-probability-basics)
@@ -286,7 +286,7 @@ M = (P + Q) / 2
 JS(P || Q) = (KL(P || M) + KL(Q || M)) / 2
 ```
 
-**Range:** 0 (identical) to 1 (maximally different). Used in Mirofish for cross-market mispricing detection.
+**Range:** 0 (identical) to 1 (maximally different). Used in K-Fish for cross-market mispricing detection.
 
 ### Application to Prediction Markets
 
@@ -310,7 +310,7 @@ For two embedding vectors A and B:
 cos(A, B) = (A · B) / (||A|| × ||B||)
 ```
 
-**Range:** -1 (opposite) to +1 (identical). In Mirofish, we use sentence-transformer embeddings (384 dimensions) to compute market-question similarity.
+**Range:** -1 (opposite) to +1 (identical). In K-Fish, we use sentence-transformer embeddings (384 dimensions) to compute market-question similarity.
 
 **Example:**
 - "Will Bitcoin exceed $100k?" and "Will Ethereum exceed $10k?" → high similarity (~0.8)

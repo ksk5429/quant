@@ -1,4 +1,4 @@
-# Literature Review: Mirofish Prediction Engine
+# Literature Review: K-Fish Prediction Engine
 
 > 26 annotated references spanning LLM forecasting, swarm intelligence, probability calibration, market microstructure, and network analysis.
 
