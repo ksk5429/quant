@@ -100,3 +100,4 @@ CREATE INDEX IF NOT EXISTS idx_predictions_timestamp ON predictions(timestamp);
 CREATE INDEX IF NOT EXISTS idx_positions_status ON positions(status);
 CREATE INDEX IF NOT EXISTS idx_positions_market ON positions(market_id);
 CREATE INDEX IF NOT EXISTS idx_calibration_timestamp ON calibration_data(timestamp);
+CREATE INDEX IF NOT EXISTS idx_calibration_market ON calibration_data(market_id, prediction);

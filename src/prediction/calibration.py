@@ -193,6 +193,14 @@ class ProbabilityCalibrator:
         self._fitted = False
         self._actual_method = method  # resolved method (for "auto")
 
+        # Validate method
+        valid_methods = {"auto", "isotonic", "beta", "histogram", "platt", "temperature"}
+        if method not in valid_methods:
+            raise ValueError(
+                f"Unknown calibration method: '{method}'. "
+                f"Valid methods: {', '.join(sorted(valid_methods))}"
+            )
+
         self._train_predictions: list[float] = []
         self._train_outcomes: list[float] = []
 

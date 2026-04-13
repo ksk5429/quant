@@ -57,8 +57,8 @@ class RetrodictionReport:
     resolution: float
     uncertainty: float
 
-    # Brier Skill Score vs market
-    bss_vs_market: float
+    # Brier Skill Score vs RANDOM (uniform 0.5 baseline, NOT crowd prices)
+    bss_vs_random: float
     bss_p_value: float
     bss_significant: bool
 
@@ -199,7 +199,7 @@ class BatchRetrodiction:
 
         if not self._results:
             logger.error("No results to report")
-            return None
+            raise ValueError("No retrodiction results available. Run batch first.")
 
         predictions = [r["prediction"] for r in self._results]
         outcomes = [r["ground_truth"] for r in self._results]
@@ -241,7 +241,7 @@ class BatchRetrodiction:
             reliability=decomp.reliability,
             resolution=decomp.resolution,
             uncertainty=decomp.uncertainty,
-            bss_vs_market=round(bss, 4),
+            bss_vs_random=round(bss, 4),
             bss_p_value=round(p_value, 4),
             bss_significant=p_value < 0.10,
             category_stats=category_stats,
@@ -415,7 +415,7 @@ class BatchRetrodiction:
         print(f"Uncertainty:     {r.uncertainty:.4f}  (fixed for this dataset)")
 
         print(f"\n{'─'*40} Brier Skill Score {'─'*13}")
-        print(f"BSS vs random:   {r.bss_vs_market:+.4f}  {'BEATS random' if r.bss_vs_market > 0 else 'LOSES to random'}")
+        print(f"BSS vs random:   {r.bss_vs_random:+.4f}  {'BEATS random' if r.bss_vs_random > 0 else 'LOSES to random'}")
         print(f"p-value:         {r.bss_p_value:.4f}  {'SIGNIFICANT' if r.bss_significant else 'not significant'}")
 
         if r.category_stats:

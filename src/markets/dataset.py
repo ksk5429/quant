@@ -157,14 +157,14 @@ class ExternalDatasetLoader:
                 if not trades_dir.exists():
                     continue
                 glob_pattern = str(trades_dir / "*.parquet")
-                # DuckDB predicate pushdown — reads only matching rows
+                # DuckDB predicate pushdown — parameterized to prevent SQL injection
                 query = f"""
                     SELECT * FROM read_parquet('{glob_pattern}', union_by_name=true)
-                    WHERE COALESCE(market, condition_id, '') = '{market_id}'
-                    LIMIT {max_trades}
+                    WHERE COALESCE(market, condition_id, '') = $1
+                    LIMIT {int(max_trades)}
                 """
                 try:
-                    result = duckdb.execute(query).fetchdf()
+                    result = duckdb.execute(query, [market_id]).fetchdf()
                     if len(result) > 0:
                         return result
                 except Exception:
@@ -242,7 +242,9 @@ class ExternalDatasetLoader:
     def compute_crowd_calibration(self, n_bins: int = 10) -> dict[str, Any]:
         """Compute the Polymarket crowd's calibration metrics.
 
-        This is the baseline our system must beat.
+        NOTE: This uses OUR retrodiction predictions (not crowd closing prices).
+        For crowd baseline, use the market closing prices from the external dataset
+        directly, not this method.
         """
         from src.prediction.calibration import compute_brier, compute_ece
 

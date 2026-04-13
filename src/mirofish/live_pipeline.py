@@ -80,7 +80,7 @@ async def run_live_pipeline(
                 market_id=market.id,
                 volume_usd=market.volume_usd,
             )
-            results.append(result)
+            results.append((result, market))  # keep result paired with its market
 
             # Quick summary
             arrow = "+" if result.position else "-"
@@ -94,7 +94,7 @@ async def run_live_pipeline(
 
     # ── Step 4: Build portfolio ──
     signals = []
-    for r, m in zip(results, top_markets):
+    for r, m in results:  # paired tuples — no misalignment possible
         if not r.swarm_healthy:
             continue
         signals.append(MarketSignal(
@@ -135,7 +135,7 @@ async def run_live_pipeline(
     print(f"{'#':>3} {'Cat':>10} {'Our P':>6} {'Mkt P':>6} {'Edge':>6} {'Spread':>6} {'Action':<20} Question")
     print(f"{'─'*80}")
 
-    for i, (r, m) in enumerate(zip(results, top_markets), 1):
+    for i, (r, m) in enumerate(results, 1):
         edge = abs(r.calibrated_probability - m.yes_price)
         pos = r.position
         action = f"{pos.side} ${pos.position_size_usd:.0f}" if pos else "—"
@@ -192,7 +192,7 @@ async def run_live_pipeline(
                     "edge": r.position.edge,
                 } if r.position else None,
             }
-            for r, m in zip(results, top_markets)
+            for r, m in results
         ],
     }
     out_path.write_text(json.dumps(save_data, indent=2, ensure_ascii=False), encoding="utf-8")

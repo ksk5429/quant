@@ -218,7 +218,7 @@ class PredictionEngineV4:
         # (spread < 0.10, all within 0.35-0.65), the market is likely
         # unknowable to the LLM. Skip the full swarm to save compute
         # and avoid guaranteed-bad predictions that inflate Brier.
-        prescreen_skipped = False
+        # (pre-screen may return early from this method)
         if config.use_researcher and len(config.personas) > 5:
             screen_fish = [
                 CLIFish(persona=p, model=config.model, claude_bin=self.claude_bin)
@@ -232,7 +232,6 @@ class PredictionEngineV4:
                 all_near_50 = all(0.35 < p < 0.65 for p in screen_probs)
                 screen_spread = max(screen_probs) - min(screen_probs)
                 if all_near_50 and screen_spread < 0.10:
-                    prescreen_skipped = True
                     logger.info(
                         f"Pre-screen: all 3 Fish near 0.50 "
                         f"(spread={screen_spread:.2f}). Market likely unknowable."
@@ -522,11 +521,17 @@ CONSTRAINTS:
                 logger.warning(f"DB record_outcome failed: {e}")
 
         # Track real P&L only when a position was actually taken
+        # Binary market P&L: shares = size / cost; pnl = shares * payout - size
         if position and market_price is not None:
+            size = position.position_size_usd
             if position.side == "YES":
-                pnl = (outcome - market_price) * position.position_size_usd / market_price
+                cost = market_price
+                payout_per_share = outcome  # 1.0 if YES wins, 0.0 if NO
             else:
-                pnl = ((1 - outcome) - (1 - market_price)) * position.position_size_usd / (1 - market_price)
+                cost = 1.0 - market_price
+                payout_per_share = 1.0 - outcome  # 1.0 if NO wins, 0.0 if YES
+            shares = size / max(cost, 0.01)
+            pnl = shares * payout_per_share - size
             self._drawdown.record_pnl(pnl)
             self._drawdown.check_halt(self._sizer.bankroll)
 

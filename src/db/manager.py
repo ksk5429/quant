@@ -126,7 +126,7 @@ class DatabaseManager:
         )
 
         cursor = self.conn.execute("""
-            INSERT OR REPLACE INTO predictions (
+            INSERT INTO predictions (
                 market_id, question, category, timestamp,
                 raw_probability, extremized_probability, calibrated_probability,
                 market_price,

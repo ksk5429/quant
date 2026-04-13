@@ -32,11 +32,8 @@ try:
 except ImportError:
     HAS_NETCAL = False
 
-try:
-    from mapie.classification import MapieClassifier
-    HAS_MAPIE = True
-except ImportError:
-    HAS_MAPIE = False
+# MAPIE removed — conformal intervals implemented directly via split conformal
+# residuals, which is simpler and more reliable for our use case.
 
 
 @dataclass
@@ -331,14 +328,14 @@ def paired_brier_test(
         boot_bss[b] = brier_skill_score(b_ours, b_mkt)
 
     p_value = float(np.mean(boot_bss <= 0))
-    ci_lower = float(np.percentile(
-        [np.mean((ours[rng.choice(n, n, True)] - outs[rng.choice(n, n, True)]) ** 2)
-         for _ in range(n_bootstrap)], 2.5
-    ))
-    ci_upper = float(np.percentile(
-        [np.mean((ours[rng.choice(n, n, True)] - outs[rng.choice(n, n, True)]) ** 2)
-         for _ in range(n_bootstrap)], 97.5
-    ))
+
+    # CI on our Brier — must use PAIRED resampling (same indices for preds and outs)
+    boot_briers = np.zeros(n_bootstrap)
+    for b in range(n_bootstrap):
+        idx = rng.choice(n, size=n, replace=True)
+        boot_briers[b] = float(np.mean((ours[idx] - outs[idx]) ** 2))
+    ci_lower = float(np.percentile(boot_briers, 2.5))
+    ci_upper = float(np.percentile(boot_briers, 97.5))
 
     return PairedBrierResult(
         bss=round(bss, 4),

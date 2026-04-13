@@ -37,6 +37,7 @@ class ClosedPosition:
     size_usd: float
     pnl_usd: float
     pnl_pct: float
+    market_outcome: float  # actual resolution: 1.0 (YES) or 0.0 (NO)
     reason: str  # 'resolved', 'stop_loss', 'manual', 'drawdown_halt'
 
 

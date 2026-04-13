@@ -153,6 +153,7 @@ class PositionManager:
                     size_usd=pos.size_usd,
                     pnl_usd=pnl,
                     pnl_pct=round(pnl / max(pos.size_usd, 0.01) * 100, 2),
+                    market_outcome=outcome,
                     reason="resolved",
                 )
                 closed.append(closed_pos)

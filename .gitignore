@@ -80,3 +80,4 @@ coverage.xml
 # Obsidian
 .obsidian/
 .claude/settings.local.json
+.hypothesis/

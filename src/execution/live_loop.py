@@ -131,11 +131,11 @@ class LiveTradingLoop:
                 self._alerts.position_closed(
                     c.market_id, c.question, c.pnl_usd, c.reason,
                 )
-                # Feed calibrator with resolution
+                # Feed calibrator with actual market outcome (not reconstructed from P&L)
                 self.engine.record_outcome(
                     market_id=c.market_id,
-                    prediction=0.5,  # will be overridden by DB lookup
-                    outcome=1.0 if c.side == "YES" and c.pnl_usd > 0 else 0.0,
+                    prediction=c.entry_price,  # our entry price as prediction proxy
+                    outcome=c.market_outcome,   # actual resolution from Gamma API
                 )
             if self._drawdown.check_halt(self.config.bankroll_usd):
                 self.executor.set_drawdown_halt(True)

@@ -1,0 +1,752 @@
+[
+  {
+    "id": "540819",
+    "question": "Will Jesus Christ return before GTA VI?",
+    "category": "general",
+    "difficulty": "hard",
+    "yes_price": 0.485,
+    "volume_usd": 10976062.054056088,
+    "liquidity_usd": 851726.9703,
+    "score": 3.3736,
+    "slug": "will-jesus-christ-return-before-gta-vi-665",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "559652",
+    "question": "Will Gavin Newsom win the 2028 Democratic presidential nomination?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.273,
+    "volume_usd": 22267744.111917637,
+    "liquidity_usd": 458030.1985,
+    "score": 3.3192,
+    "slug": "will-gavin-newsom-win-the-2028-democratic-presidential-nomination-568",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "561974",
+    "question": "Will J.D. Vance win the 2028 Republican presidential nomination?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.418,
+    "volume_usd": 11871966.614295958,
+    "liquidity_usd": 233181.99788,
+    "score": 3.3176,
+    "slug": "will-jd-vance-win-the-2028-republican-presidential-nomination",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "1706766",
+    "question": "Iran x Israel/US conflict ends by April 7?",
+    "category": "geopolitics",
+    "difficulty": "hard",
+    "yes_price": 0.3785,
+    "volume_usd": 13192102.683606056,
+    "liquidity_usd": 119081.06775,
+    "score": 3.2959,
+    "slug": "iran-x-israelus-conflict-ends-by-april-7-346",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "567687",
+    "question": "Russia x Ukraine ceasefire by end of 2026?",
+    "category": "geopolitics",
+    "difficulty": "hard",
+    "yes_price": 0.295,
+    "volume_usd": 14068337.831487037,
+    "liquidity_usd": 454603.5401,
+    "score": 3.2569,
+    "slug": "russia-x-ukraine-ceasefire-before-2027",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "665374",
+    "question": "Will the U.S. invade Iran before 2027?",
+    "category": "geopolitics",
+    "difficulty": "medium",
+    "yes_price": 0.415,
+    "volume_usd": 8420865.57133517,
+    "liquidity_usd": 229847.9638,
+    "score": 3.2553,
+    "slug": "will-the-us-invade-iran-before-2027",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "703257",
+    "question": "Will the US confirm that aliens exist before 2027?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.175,
+    "volume_usd": 22878723.715348437,
+    "liquidity_usd": 666426.0479,
+    "score": 3.2502,
+    "slug": "will-the-us-confirm-that-aliens-exist-before-2027-789",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "997488",
+    "question": "Will Trump acquire Greenland before 2027?",
+    "category": "crypto",
+    "difficulty": "hard",
+    "yes_price": 0.0925,
+    "volume_usd": 32281170.457783233,
+    "liquidity_usd": 414218.1968,
+    "score": 3.2381,
+    "slug": "will-trump-acquire-greenland-before-2027",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "958443",
+    "question": "Will the Iranian regime fall by June 30?",
+    "category": "geopolitics",
+    "difficulty": "hard",
+    "yes_price": 0.105,
+    "volume_usd": 29724122.157783195,
+    "liquidity_usd": 415118.2613,
+    "score": 3.2338,
+    "slug": "will-the-iranian-regime-fall-by-june-30",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "566188",
+    "question": "Will Manchester City win the 2025–26 English Premier League?",
+    "category": "crypto",
+    "difficulty": "hard",
+    "yes_price": 0.31,
+    "volume_usd": 10371830.170385035,
+    "liquidity_usd": 260499.6677,
+    "score": 3.2091,
+    "slug": "will-manchester-city-win-the-202526-english-premier-league",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "1567746",
+    "question": "Iran x Israel/US conflict ends by April 15?",
+    "category": "geopolitics",
+    "difficulty": "medium",
+    "yes_price": 0.3875,
+    "volume_usd": 7440250.673855996,
+    "liquidity_usd": 94685.14968,
+    "score": 3.2008,
+    "slug": "iran-x-israelus-conflict-ends-by-april-15-618-586-982",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "553856",
+    "question": "Will the Oklahoma City Thunder win the 2026 NBA Finals?",
+    "category": "sports",
+    "difficulty": "medium",
+    "yes_price": 0.395,
+    "volume_usd": 6430871.29814197,
+    "liquidity_usd": 242659.8014,
+    "score": 3.1932,
+    "slug": "will-the-oklahoma-city-thunder-win-the-2026-nba-finals",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "540844",
+    "question": "Will bitcoin hit $1m before GTA VI?",
+    "category": "crypto",
+    "difficulty": "medium",
+    "yes_price": 0.489,
+    "volume_usd": 3969008.2271355605,
+    "liquidity_usd": 471283.60617,
+    "score": 3.1928,
+    "slug": "will-bitcoin-hit-1m-before-gta-vi-872",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "663583",
+    "question": "Will the Iranian regime fall before 2027?",
+    "category": "geopolitics",
+    "difficulty": "hard",
+    "yes_price": 0.215,
+    "volume_usd": 14371130.555593688,
+    "liquidity_usd": 286642.7883,
+    "score": 3.1909,
+    "slug": "will-the-iranian-regime-fall-by-the-end-of-2026",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "566187",
+    "question": "Will Arsenal win the 2025–26 English Premier League?",
+    "category": "crypto",
+    "difficulty": "medium",
+    "yes_price": 0.685,
+    "volume_usd": 9086492.825556654,
+    "liquidity_usd": 271691.5689,
+    "score": 3.1906,
+    "slug": "will-arsenal-win-the-202526-english-premier-league",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "553866",
+    "question": "Will the San Antonio Spurs win the 2026 NBA Finals?",
+    "category": "sports",
+    "difficulty": "hard",
+    "yes_price": 0.1795,
+    "volume_usd": 15529951.88892382,
+    "liquidity_usd": 145751.25477,
+    "score": 3.1676,
+    "slug": "will-the-san-antonio-spurs-win-the-2026-nba-finals",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "553828",
+    "question": "Will the Colorado Avalanche win the 2026 NHL Stanley Cup?",
+    "category": "general",
+    "difficulty": "hard",
+    "yes_price": 0.202,
+    "volume_usd": 13431276.332113035,
+    "liquidity_usd": 102010.87476,
+    "score": 3.156,
+    "slug": "will-the-colorado-avalanche-win-the-2026-nhl-stanley-cup",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "567621",
+    "question": "Will China invade Taiwan by end of 2026?",
+    "category": "geopolitics",
+    "difficulty": "hard",
+    "yes_price": 0.087,
+    "volume_usd": 19597654.250947993,
+    "liquidity_usd": 843825.51091,
+    "score": 3.1558,
+    "slug": "will-china-invade-taiwan-before-2027",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "567560",
+    "question": "Will the next Prime Minister of Hungary be Viktor Orbán?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.165,
+    "volume_usd": 13692020.813833619,
+    "liquidity_usd": 358849.2961,
+    "score": 3.1453,
+    "slug": "will-the-next-prime-minister-of-hungary-be-viktor-orbn",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "561230",
+    "question": "Will Gavin Newsom win the 2028 US Presidential Election?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.161,
+    "volume_usd": 13656010.361557098,
+    "liquidity_usd": 415586.52441,
+    "score": 3.1435,
+    "slug": "will-gavin-newsom-win-the-2028-us-presidential-election",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "558934",
+    "question": "Will Spain win the 2026 FIFA World Cup?",
+    "category": "sports",
+    "difficulty": "hard",
+    "yes_price": 0.1705,
+    "volume_usd": 12110724.559811028,
+    "liquidity_usd": 670790.84893,
+    "score": 3.1361,
+    "slug": "will-spain-win-the-2026-fifa-world-cup-963",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "601819",
+    "question": "Will Luiz Inácio Lula da Silva win the 2026 Brazilian presidential election?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.395,
+    "volume_usd": 4480634.082313045,
+    "liquidity_usd": 150651.0463,
+    "score": 3.1245,
+    "slug": "will-luiz-incio-lula-da-silva-win-the-2026-brazilian-presidential-election",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "1567747",
+    "question": "Iran x Israel/US conflict ends by April 30?",
+    "category": "geopolitics",
+    "difficulty": "medium",
+    "yes_price": 0.47,
+    "volume_usd": 3385207.89632198,
+    "liquidity_usd": 59009.533,
+    "score": 3.1241,
+    "slug": "iran-x-israelus-conflict-ends-by-april-30-766-662-668-546",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "558936",
+    "question": "Will France win the 2026 FIFA World Cup?",
+    "category": "sports",
+    "difficulty": "hard",
+    "yes_price": 0.1605,
+    "volume_usd": 11432953.060424874,
+    "liquidity_usd": 934231.67115,
+    "score": 3.1222,
+    "slug": "will-france-win-the-2026-fifa-world-cup-924",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "567561",
+    "question": "Will the next Prime Minister of Hungary be Péter Magyar?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.83,
+    "volume_usd": 12407866.024858566,
+    "liquidity_usd": 142639.3891,
+    "score": 3.1207,
+    "slug": "will-the-next-prime-minister-of-hungary-be-pter-magyar",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "561229",
+    "question": "Will JD Vance win the 2028 US Presidential Election?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.1875,
+    "volume_usd": 10114378.958769847,
+    "liquidity_usd": 722929.74661,
+    "score": 3.1194,
+    "slug": "will-jd-vance-win-the-2028-us-presidential-election",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "1947793",
+    "question": "Rolex Monte Carlo Masters: Carlos Alcaraz vs Jannik Sinner",
+    "category": "general",
+    "difficulty": "hard",
+    "yes_price": 0.415,
+    "volume_usd": 3868300.036575011,
+    "liquidity_usd": 168737.0139,
+    "score": 3.1164,
+    "slug": "atp-alcaraz-sinner-2026-04-12",
+    "outcomes": [
+      "Carlos Alcaraz",
+      "Jannik Sinner"
+    ]
+  },
+  {
+    "id": "601826",
+    "question": "Will Flávio Bolsonaro win the 2026 Brazilian presidential election?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.3985,
+    "volume_usd": 3993823.421043979,
+    "liquidity_usd": 107792.34263,
+    "score": 3.1031,
+    "slug": "will-flvio-bolsonaro-win-the-2026-brazilian-presidential-election",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "562186",
+    "question": "Will Ken Paxton win the 2026 Texas Republican Primary?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.605,
+    "volume_usd": 4178329.0139260185,
+    "liquidity_usd": 43339.8187,
+    "score": 3.0969,
+    "slug": "will-ken-paxton-win-the-2026-republican-primary",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "566146",
+    "question": "Will Atletico Madrid win the 2025–26 Champions League?",
+    "category": "crypto",
+    "difficulty": "hard",
+    "yes_price": 0.073,
+    "volume_usd": 16458674.873055972,
+    "liquidity_usd": 194015.29498,
+    "score": 3.096,
+    "slug": "will-atletico-madrid-win-the-202526-champions-league",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "1484914",
+    "question": "Iran x Israel/US conflict ends by May 15?",
+    "category": "geopolitics",
+    "difficulty": "medium",
+    "yes_price": 0.56,
+    "volume_usd": 3144763.1711299834,
+    "liquidity_usd": 93625.8442,
+    "score": 3.0931,
+    "slug": "iran-x-israelus-conflict-ends-by-may-15-562-372-916-721-496",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "628955",
+    "question": "Will Tom Steyer win the California Governor Election in 2026?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.519,
+    "volume_usd": 2733998.0767289954,
+    "liquidity_usd": 27011.53963,
+    "score": 3.0861,
+    "slug": "will-tom-steyer-win-the-california-governor-election-in-2026",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "561975",
+    "question": "Will Marco Rubio win the 2028 Republican presidential nomination?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.218,
+    "volume_usd": 7650541.065670023,
+    "liquidity_usd": 267448.76683,
+    "score": 3.0829,
+    "slug": "will-marco-rubio-win-the-2028-republican-presidential-nomination",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "1126504",
+    "question": "Will the US acquire part of Greenland in 2026?",
+    "category": "crypto",
+    "difficulty": "medium",
+    "yes_price": 0.175,
+    "volume_usd": 9469424.48076101,
+    "liquidity_usd": 152090.2846,
+    "score": 3.0786,
+    "slug": "will-the-us-acquire-any-part-of-greenland-in-2026",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "558935",
+    "question": "Will England win the 2026 FIFA World Cup?",
+    "category": "sports",
+    "difficulty": "hard",
+    "yes_price": 0.1125,
+    "volume_usd": 10687612.71438681,
+    "liquidity_usd": 992872.78905,
+    "score": 3.0729,
+    "slug": "will-england-win-the-2026-fifa-world-cup-937",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "559653",
+    "question": "Will Alexandria Ocasio-Cortez win the 2028 Democratic presidential nomination?",
+    "category": "politics",
+    "difficulty": "hard",
+    "yes_price": 0.0855,
+    "volume_usd": 11509437.196794245,
+    "liquidity_usd": 482765.92615,
+    "score": 3.0552,
+    "slug": "will-alexandria-ocasio-cortez-win-the-2028-democratic-presidential-nomination-653",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "616902",
+    "question": "Will no Fed rate cuts happen in 2026?",
+    "category": "geopolitics",
+    "difficulty": "medium",
+    "yes_price": 0.3975,
+    "volume_usd": 3104108.4156230125,
+    "liquidity_usd": 70908.6902,
+    "score": 3.0534,
+    "slug": "will-no-fed-rate-cuts-happen-in-2026",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "558938",
+    "question": "Will Argentina win the 2026 FIFA World Cup?",
+    "category": "sports",
+    "difficulty": "hard",
+    "yes_price": 0.0895,
+    "volume_usd": 10820821.362119112,
+    "liquidity_usd": 691168.23812,
+    "score": 3.0521,
+    "slug": "will-argentina-win-the-2026-fifa-world-cup-245",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "558937",
+    "question": "Will Brazil win the 2026 FIFA World Cup?",
+    "category": "sports",
+    "difficulty": "hard",
+    "yes_price": 0.086,
+    "volume_usd": 10606183.850348046,
+    "liquidity_usd": 663843.96314,
+    "score": 3.0454,
+    "slug": "will-brazil-win-the-2026-fifa-world-cup-183",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "562187",
+    "question": "Will John Cornyn win the 2026 Texas Republican Primary?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.385,
+    "volume_usd": 3112152.280999236,
+    "liquidity_usd": 43326.0696,
+    "score": 3.0377,
+    "slug": "will-john-cornyn-win-the-2026-republican-primary",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "566142",
+    "question": "Will Bayern Munich win the 2025–26 Champions League?",
+    "category": "crypto",
+    "difficulty": "medium",
+    "yes_price": 0.315,
+    "volume_usd": 3731001.160248905,
+    "liquidity_usd": 259719.2974,
+    "score": 3.0354,
+    "slug": "will-bayern-munich-win-the-202526-champions-league",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "1712297",
+    "question": "Will WTI Crude Oil (WTI) hit (HIGH) $120 in April?",
+    "category": "crypto",
+    "difficulty": "medium",
+    "yes_price": 0.375,
+    "volume_usd": 3082096.6913880087,
+    "liquidity_usd": 76332.7687,
+    "score": 3.035,
+    "slug": "will-wti-crude-oil-wti-hit-high-120-in-april",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "568630",
+    "question": "Will Rory McIlroy win the 2026 Masters tournament?",
+    "category": "general",
+    "difficulty": "medium",
+    "yes_price": 0.35,
+    "volume_usd": 3377812.183940032,
+    "liquidity_usd": 88148.827,
+    "score": 3.0327,
+    "slug": "will-rory-mcilroy-win-the-2026-masters-tournament",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "558940",
+    "question": "Will Portugal win the 2026 FIFA World Cup?",
+    "category": "sports",
+    "difficulty": "hard",
+    "yes_price": 0.0675,
+    "volume_usd": 11283066.346557654,
+    "liquidity_usd": 244706.92019,
+    "score": 3.0289,
+    "slug": "will-portugal-win-the-2026-fifa-world-cup-912",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "540843",
+    "question": "Will China invades Taiwan before GTA VI?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.515,
+    "volume_usd": 1778903.372588062,
+    "liquidity_usd": 81472.3569,
+    "score": 3.0284,
+    "slug": "will-china-invades-taiwan-before-gta-vi-716",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "666861",
+    "question": "Trump out as President before 2027?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.165,
+    "volume_usd": 6881580.9671760695,
+    "liquidity_usd": 437742.9451,
+    "score": 3.0283,
+    "slug": "trump-out-as-president-before-2027",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "648383",
+    "question": "Billionaire one-time wealth tax passes in California election 2026?",
+    "category": "politics",
+    "difficulty": "medium",
+    "yes_price": 0.385,
+    "volume_usd": 2861837.070235974,
+    "liquidity_usd": 51377.4756,
+    "score": 3.0253,
+    "slug": "billionaire-one-time-wealth-tax-passes-in-california-election-2026",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "566136",
+    "question": "Will PSG win the 2025–26 Champions League?",
+    "category": "crypto",
+    "difficulty": "medium",
+    "yes_price": 0.205,
+    "volume_usd": 5821299.246979988,
+    "liquidity_usd": 233267.8068,
+    "score": 3.0234,
+    "slug": "will-psg-win-the-202526-champions-league",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "568668",
+    "question": "Will Cameron Young win the 2026 Masters tournament?",
+    "category": "general",
+    "difficulty": "medium",
+    "yes_price": 0.2845,
+    "volume_usd": 4241449.524919986,
+    "liquidity_usd": 91590.59841,
+    "score": 3.0204,
+    "slug": "will-cameron-young-win-the-2026-masters-tournament",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  },
+  {
+    "id": "842015",
+    "question": "Will Finland win Eurovision 2026?",
+    "category": "general",
+    "difficulty": "medium",
+    "yes_price": 0.3855,
+    "volume_usd": 2402057.814455998,
+    "liquidity_usd": 382150.18641,
+    "score": 3.0201,
+    "slug": "will-finland-win-eurovision-2026",
+    "outcomes": [
+      "Yes",
+      "No"
+    ]
+  }
+]
