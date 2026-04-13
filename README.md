@@ -204,32 +204,54 @@ Each persona encodes a **structurally different decomposition strategy** to maxi
 > Novel contribution: instead of only predicting events, K-Fish detects where AI traders are systematically wrong and exploits the bias.
 
 ```mermaid
-flowchart LR
+flowchart TD
+    INPUT["`**Fish Predictions**
+    9 probabilities + reasoning text`"]
+
+    INPUT --> L1
+
     subgraph DETECT [" 5-Layer Bias Detection "]
-        L1["`**Layer 1**
-        Reasoning vs Probability
-        coherence gap`"]
-        L2["`**Layer 2**
-        Bimodal spread
-        split vs uncertain`"]
-        L3["`**Layer 3**
-        Knowledge cutoff
-        classification`"]
-        L4["`**Layer 4**
-        Confidence paradox
-        confident about 0.50`"]
-        L5["`**Layer 5**
-        Self-calibration
-        learn from outcomes`"]
+        direction TB
+        L1["`**Layer 1 — Reasoning Coherence**
+        Does the text contradict the number?
+        Directional keywords vs stated probability`"]
+
+        L2["`**Layer 2 — Distribution Shape**
+        Is the swarm split (bimodal) or clustered?
+        Split = disagreement, not uncertainty`"]
+
+        L3["`**Layer 3 — Knowledge Cutoff**
+        Do Fish reference training data limits?
+        30%+ cutoff mentions = knowledge gap`"]
+
+        L4["`**Layer 4 — Confidence Paradox**
+        High confidence + neutral probability?
+        Confident about 0.50 = RLHF artifact`"]
+
+        L5["`**Layer 5 — Self-Calibration**
+        Track per-regime Brier scores
+        Learn which actions actually work`"]
+
+        L1 --> L2 --> L3 --> L4 --> L5
     end
 
-    DETECT --> R{Regime?}
-    R -->|RLHF Compression| D["`Decompress
-    0.51 → 0.65`"]
-    R -->|Knowledge Gap| C["`Follow Crowd
-    blend with market`"]
-    R -->|Genuine Uncertainty| S["`Skip
-    no edge`"]
+    L5 --> R{"`**Regime
+    Classification**`"}
+
+    R -->|"R-P gap > 0.15
+    reasoning contradicts number"| D["`**RLHF Compression**
+    Decompress: 0.51 → 0.65
+    Trade on decompressed probability`"]
+
+    R -->|"30%+ Fish reference cutoff
+    post-training event"| C["`**Knowledge Gap**
+    Blend with crowd price
+    They have info we lack`"]
+
+    R -->|"Low R-P gap, low confidence
+    both AI and crowd near 0.50"| S["`**Genuine Uncertainty**
+    Skip — no edge exists
+    Save compute for better markets`"]
 ```
 
 <details>
