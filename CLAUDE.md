@@ -68,10 +68,11 @@ python -m src.markets.history --limit 2500 --min-volume 5000
 
 ## Current Baseline (v4 retrodiction, 30 markets)
 
-- Brier: 0.213 (Polymarket crowd: 0.084, random: 0.250)
-- Accuracy: 73.3%
-- Best Fish: inside_view (0.182), contrarian (0.193), calibrator (0.196)
-- 200-market retrodiction running for calibrator training
+- Brier: 0.206 (N=200) — BSS +17.6% vs random, does not yet beat crowd (0.084)
+- Accuracy: 69.0% (138/200 correct)
+- Best Fish: contrarian (0.199), inside_view (0.206), premortem (0.207)
+- 200-market retrodiction COMPLETE — calibrator trained on 200 samples
+- v5 production upgrade: SQLite persistence, CLOB executor, 120 tests, paper trading ready
 
 ## Execution Protocols
 

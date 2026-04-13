@@ -5,11 +5,12 @@
 </p>
 
 <p align="center">
-<a href="#retrodiction-baseline"><img src="https://img.shields.io/badge/Brier_Score-0.213-2196F3?style=for-the-badge" alt="Brier"></a>
-<a href="#retrodiction-baseline"><img src="https://img.shields.io/badge/Accuracy-73.3%25-4CAF50?style=for-the-badge" alt="Accuracy"></a>
+<a href="#retrodiction-baseline"><img src="https://img.shields.io/badge/Brier_Score-0.206_(N%3D200)-2196F3?style=for-the-badge" alt="Brier"></a>
+<a href="#retrodiction-baseline"><img src="https://img.shields.io/badge/Accuracy-69%25-4CAF50?style=for-the-badge" alt="Accuracy"></a>
 <a href="#zero-cost-architecture"><img src="https://img.shields.io/badge/Cost-$0.00/market-00C853?style=for-the-badge" alt="Cost"></a>
 <a href="#fish-personas"><img src="https://img.shields.io/badge/Fish_Agents-9_Personas-7C4DFF?style=for-the-badge" alt="Fish"></a>
-<a href="docs/Literature_Review_Multi_Agent_LLM_Prediction_Markets.md"><img src="https://img.shields.io/badge/Literature-32_Sources-FF6D00?style=for-the-badge" alt="Lit"></a>
+<a href="#v5-production-features"><img src="https://img.shields.io/badge/v5-Production_Ready-FF6D00?style=for-the-badge" alt="v5"></a>
+<a href="docs/Literature_Review_Multi_Agent_LLM_Prediction_Markets.md"><img src="https://img.shields.io/badge/Literature-32_Sources-9E9E9E?style=for-the-badge" alt="Lit"></a>
 </p>
 
 <p align="center">
@@ -147,32 +148,33 @@ Each persona encodes a **structurally different decomposition strategy** to maxi
 
 ## Retrodiction Baseline
 
-30 resolved Polymarket markets · 9 Fish · Claude Haiku CLI · **$0 cost**
+200 resolved Polymarket markets · 9 Fish · Claude Haiku CLI · **$0 cost** · 7.7 hours runtime
 
-| Metric | K-Fish v4 | Polymarket Crowd | Random |
-|:------:|:---------:|:----------------:|:------:|
-| **Brier Score** | **0.213** | 0.084 | 0.250 |
-| **Accuracy** | **73.3%** | ~90% | 50% |
-| **Cost/market** | **$0.00** | — | — |
-| **Time/market** | **135s** | — | — |
+| Metric | K-Fish v5 (N=200) | K-Fish v4 (N=30) | Random |
+|:------:|:-----------------:|:----------------:|:------:|
+| **Brier Score** | **0.206** | 0.213 | 0.250 |
+| **Accuracy** | **69.0%** | 73.3% | 50% |
+| **ECE** | **0.140** | 0.178 | 0.250 |
+| **BSS vs Random** | **+17.6%** | +14.8% | 0% |
+| **Cost** | **$0.00** | $0.00 | — |
 
 > [!NOTE]
-> On markets where the LLM has relevant knowledge (25/30), K-Fish achieves **Brier 0.073** — beating the Polymarket crowd (0.084). The overall gap is driven by 5 surprise events beyond the LLM training data cutoff.
+> BSS (Brier Skill Score) = +17.6% means K-Fish predictions are 17.6% more accurate than random guessing. The system does not yet beat the Polymarket crowd aggregate (Brier ~0.084), which incorporates information from thousands of traders including whales and insiders. The gap is primarily driven by surprise events beyond the LLM training data cutoff.
 
 <details>
-<summary><strong>Per-Fish Performance Rankings</strong></summary>
+<summary><strong>Per-Fish Performance Rankings (N=200)</strong></summary>
 
 | Rank | Persona | Brier | Assessment |
 |:----:|---------|:-----:|------------|
-| 1 | Inside View | 0.182 | Best — domain expertise adds real value |
-| 2 | Contrarian | 0.193 | Challenging consensus consistently helps |
-| 3 | Calibrator | 0.196 | Tetlock method is well-calibrated |
-| 4 | Institutional | 0.211 | Status quo analysis is reliable |
-| 5 | Base Rate | 0.212 | Good anchor but misses surprises |
-| 6 | Decomposer | 0.224 | Conditional decomposition adds moderate value |
-| 7 | Bayesian | 0.229 | Explicit prior/likelihood reasoning |
-| 8 | Premortem | 0.235 | Failure scenarios less useful for binary outcomes |
-| 9 | Temporal | 0.239 | Timing analysis least effective persona |
+| 1 | Contrarian | 0.199 | Best at N=200 — consensus stress-testing adds real value |
+| 2 | Inside View | 0.206 | Domain expertise remains strong |
+| 3 | Premortem | 0.207 | Improved with more data (was worst at N=30) |
+| 4 | Calibrator | 0.209 | Tetlock method is consistently reliable |
+| 5 | Decomposer | 0.211 | Conditional decomposition adds moderate value |
+| 6 | Bayesian | 0.213 | Explicit prior/likelihood reasoning |
+| 7 | Temporal | 0.217 | Timing analysis improved with larger sample |
+| 8 | Institutional | 0.224 | Status quo analysis less useful than expected |
+| 9 | Base Rate | 0.226 | Anchoring too heavily on base rates hurts on novel events |
 
 </details>
 
@@ -189,7 +191,59 @@ Each persona encodes a **structurally different decomposition strategy** to maxi
 | **Pre-screen** | No | No | Yes (3-Fish filter for unknowable markets) |
 | **Cost** | API calls ($) | API calls ($) | **$0.00** (CLI mode) |
 | **Risk mgmt** | Position limits | Quarter-Kelly | Quarter-Kelly + GARCH volatility + drawdown circuit breaker |
-| **Validated** | Backtest only | Backtest only | Retrodiction on real resolved markets |
+| **Validated** | Backtest only | Backtest only | 200-market retrodiction on resolved markets |
+| **Persistence** | None | None | SQLite (survives restart) |
+| **Paper trading** | No | No | Yes (full daemon loop) |
+
+---
+
+## v5 Production Features
+
+> [!IMPORTANT]
+> v5 transforms K-Fish from a research prototype into a production trading system with persistence, execution, monitoring, and safety controls.
+
+```mermaid
+graph TD
+    subgraph PERSIST ["💾 Persistence (Phase 1)"]
+        DB["SQLite database\npredictions · positions · calibration\nresolutions · system state"]
+    end
+
+    subgraph RETRO ["📊 Statistical Validity (Phase 2)"]
+        R200["200-market retrodiction\nBrier 0.206 · BSS +17.6%\nbootstrap CIs · per-category breakdown"]
+    end
+
+    subgraph EXEC ["⚡ Live Execution (Phase 3)"]
+        EX["Polymarket CLOB executor\n5 safety checks · paper default\nposition manager · reconciliation"]
+    end
+
+    subgraph TEST ["🧪 Test Coverage (Phase 4)"]
+        T120["120 tests passing\nHypothesis property-based\nunit + integration"]
+    end
+
+    subgraph MON ["📈 Monitoring (Phase 5)"]
+        DASH["Track record dashboard\nJSONL alerting\ngraceful degradation"]
+    end
+
+    subgraph PAPER ["📋 Paper Trading (Phase 6)"]
+        PT["Daemon loop (6h cycles)\ndaily/weekly reports\ngo/no-go checklist"]
+    end
+
+    PERSIST --> RETRO --> EXEC --> TEST --> MON --> PAPER
+```
+
+<details>
+<summary><strong>6 Safety Rules (non-negotiable)</strong></summary>
+
+| Rule | Enforcement |
+|------|-------------|
+| Paper trading is default | `paper_trading=True` in all constructors. `--live` flag + typed confirmation required. |
+| Private keys never in code | Environment variables only. `.env` is gitignored. |
+| Position limits are hard caps | Enforced at executor level: max $50/position, max $300 exposure. |
+| Drawdown halt is automatic | Trading stops at -15%. Persisted to DB. Manual `--reset-drawdown` to resume. |
+| Reconciliation runs daily | DB vs on-chain check via `--reconcile` flag. |
+| Gradual escalation | Week 1-2: $25/pos. Week 3-4: $50/pos. Month 2+: evaluate. |
+
+</details>
 
 ---
 
@@ -218,13 +272,22 @@ pip install netcal scoringrules quantstats trafilatura statsforecast mlflow sent
 ```bash
 # Scan live Polymarket markets
 python -m src.markets.scanner --min-volume 100000
+
+# Start paper trading daemon (6-hour cycles, $0 cost)
+bash scripts/start_paper_trading.sh
+
+# Daily performance check
+bash scripts/daily_report.sh
+
+# Weekly statistical review with go/no-go checklist
+bash scripts/weekly_review.sh
 ```
 
 <details>
-<summary><strong>Expected output</strong></summary>
+<summary><strong>Expected scanner output</strong></summary>
 
 ```
-MIROFISH MARKET SCAN — 2026-04-12 22:39
+K-FISH MARKET SCAN — 2026-04-12 22:39
 Active markets scanned: 50
 
 Rank Score        Cat  Price       Vol($) Question
@@ -254,39 +317,44 @@ python -m src.mirofish.live_pipeline --top 10 --model haiku
 
 ```
 src/
-├── mirofish/                   # K-Fish Swarm Engine
-│   ├── engine_v4.py           #   Canonical pipeline: Route→Research→Delphi→Calibrate→Kelly
+├── mirofish/                   # Swarm Engine
+│   ├── engine_v4.py           #   Canonical pipeline with DB integration
 │   ├── llm_fish.py            #   9 personas, 4 backends, asymmetric extremization
-│   ├── researcher.py          #   Context gathering (base rates, facts, contrarian case)
-│   ├── swarm_router.py        #   Score-based category routing + model competition
+│   ├── researcher.py          #   Context gathering Fish
+│   ├── swarm_router.py        #   Category routing + model competition
 │   ├── live_pipeline.py       #   Scanner → Engine → Portfolio → Report
-│   ├── ipc.py                 #   File-based IPC for distributed Fish
-│   ├── swarm.py               #   Swarm orchestrator
-│   ├── god_node.py            #   Event injection + impact analysis
-│   └── message_bus.py         #   Inter-agent communication
+│   └── ipc.py                 #   File-based IPC for distributed Fish
 ├── prediction/                 # Scoring & Calibration
-│   ├── calibration.py         #   netcal v2: Beta/Histogram/Isotonic/auto-select + CRPS
-│   ├── advanced_scoring.py    #   Brier decomposition, conformal intervals
-│   ├── volatility.py          #   GARCH regime detection, volatility-adjusted Kelly
-│   └── run_retrodiction.py    #   CLI-based evaluation on resolved markets
-├── risk/                       # Position Sizing & Risk
-│   ├── portfolio.py           #   Edge detection, Kelly criterion, drawdown monitor
-│   └── analytics.py           #   Sharpe/Sortino/Calmar, Monte Carlo simulation
+│   ├── calibration.py         #   netcal v2: Beta/Histogram/auto-select + CRPS
+│   ├── advanced_scoring.py    #   Brier decomposition, bootstrap CI, BSS
+│   ├── batch_retrodiction.py  #   200+ market batch evaluation with DB
+│   ├── volatility.py          #   GARCH regime detection
+│   └── run_retrodiction.py    #   CLI-based evaluation runner
+├── execution/                  #  v5  Live Trading
+│   ├── polymarket_executor.py #   py-clob-client wrapper, 5 safety checks
+│   ├── position_manager.py    #   Execute, resolve, reconcile positions
+│   ├── live_loop.py           #   Production daemon (6h cycles)
+│   └── order_types.py         #   OrderResult, ClosedPosition
+├── db/                         #  v5  Persistence
+│   ├── schema.sql             #   5 tables: predictions, positions, calibration, etc.
+│   └── manager.py             #   DatabaseManager with context manager
+├── reporting/                  #  v5  Monitoring
+│   ├── dashboard.py           #   Markdown track record generator
+│   └── alerts.py              #   JSONL event alerting
+├── risk/                       # Position Sizing
+│   ├── portfolio.py           #   Edge detection, Kelly, drawdown monitor
+│   └── analytics.py           #   Sharpe/Sortino, Monte Carlo simulation
 ├── markets/                    # Market Data
-│   ├── polymarket.py          #   Gamma API (metadata) + CLOB API (trading)
-│   ├── scanner.py             #   Live market discovery + composite ranking
-│   ├── history.py             #   Resolved market scraper with retry logic
+│   ├── polymarket.py          #   Gamma + CLOB API clients
+│   ├── scanner.py             #   Live market discovery + ranking
+│   ├── history.py             #   Resolved market scraper (2,500 markets)
 │   └── dataset.py             #   408K market parquet loader (DuckDB)
-├── semantic/                   # NLP & Information
-│   ├── analyzer.py            #   Embedding similarity, market clustering
-│   └── news_extractor.py      #   trafilatura extraction + semantic matching
-├── network/                    # Graph Analysis
-│   └── market_graph.py        #   Cross-market correlation, centrality
+├── semantic/                   # NLP
+│   └── news_extractor.py      #   trafilatura + sentence-transformers
 └── utils/                      # Infrastructure
-    ├── cli.py                 #   Cross-platform Claude binary detection
-    ├── experiment_tracker.py  #   MLflow experiment tracking
-    ├── config.py              #   YAML configuration loader
-    └── logging.py             #   Structured logging (loguru)
+    ├── cli.py                 #   Claude binary detection
+    ├── experiment_tracker.py  #   MLflow tracking
+    └── config.py              #   YAML config loader
 ```
 
 </details>
@@ -374,6 +442,22 @@ block-beta
 
 ---
 
+## Project Stats
+
+| Metric | Value |
+|--------|:-----:|
+| Python source lines | ~15,000 |
+| Source modules | 35+ |
+| Unit tests passing | 120 |
+| Code reviews completed | 4 |
+| Bugs found and fixed | 36 |
+| Retrodiction markets | 200 |
+| Resolved market corpus | 2,500 |
+| External dataset | 408,863 markets |
+| Libraries integrated | 10 |
+
+---
+
 ## Research Foundation
 
 > [!TIP]
@@ -393,23 +477,25 @@ block-beta
 
 ```mermaid
 graph TD
-    P1["✅ <b>Phase 1</b> — Foundation<br/>Core engine · 45 tests · Literature review · Polymarket API"]
+    P1["✅ <b>Phase 1</b> — Foundation<br/>Core engine · Literature review · Polymarket API"]
     P2["✅ <b>Phase 2</b> — Swarm Intelligence<br/>9 Fish personas · Multi-round Delphi · CLI execution"]
-    P3["✅ <b>Phase 3</b> — Calibration<br/>Retrodiction baseline Brier 0.213 · netcal integration"]
-    P4["✅ <b>Phase 4</b> — Risk Management<br/>Kelly sizing · Edge detection · Drawdown monitor · Monte Carlo"]
-    P5["✅ <b>Phase 5</b> — Live Pipeline<br/>Market scanner · Live pipeline · SwarmRouter"]
-    P6["🔄 <b>Phase 6</b> — Scale<br/>200+ market calibration · CLOB order execution · Dashboard"]
-    P7["⬜ <b>Phase 7</b> — Optimization<br/>Fine-tuned specialist Fish via GRPO · Cross-platform arbitrage"]
+    P3["✅ <b>Phase 3</b> — Calibration<br/>netcal integration · Retrodiction baseline"]
+    P4["✅ <b>Phase 4</b> — Risk Management<br/>Kelly sizing · Edge detection · Drawdown monitor"]
+    P5["✅ <b>Phase 5</b> — v5 Persistence<br/>SQLite DB · 200-market retrodiction · Brier 0.206"]
+    P6["✅ <b>Phase 6</b> — v5 Execution<br/>CLOB executor · Position manager · 120 tests · Dashboard"]
+    P7["🔄 <b>Phase 7</b> — Paper Trading<br/>2-4 weeks validation · Go/no-go checklist"]
+    P8["⬜ <b>Phase 8</b> — Live Trading<br/>Real capital · Gradual escalation · GRPO fine-tuning"]
 
-    P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7
+    P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7 --> P8
 
     style P1 fill:#0a2910,stroke:#3fb950,color:#3fb950
     style P2 fill:#0a2910,stroke:#3fb950,color:#3fb950
     style P3 fill:#0a2910,stroke:#3fb950,color:#3fb950
     style P4 fill:#0a2910,stroke:#3fb950,color:#3fb950
     style P5 fill:#0a2910,stroke:#3fb950,color:#3fb950
-    style P6 fill:#1a1a2e,stroke:#58a6ff,color:#58a6ff
-    style P7 fill:#1a1a2e,stroke:#8b949e,color:#8b949e
+    style P6 fill:#0a2910,stroke:#3fb950,color:#3fb950
+    style P7 fill:#1a1a2e,stroke:#58a6ff,color:#58a6ff
+    style P8 fill:#1a1a2e,stroke:#8b949e,color:#8b949e
 ```
 
 ---
