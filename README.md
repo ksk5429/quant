@@ -194,8 +194,76 @@ Each persona encodes a **structurally different decomposition strategy** to maxi
 | **Validated** | Backtest only | Backtest only | 200-market retrodiction on resolved markets |
 | **Persistence** | None | None | SQLite (survives restart) |
 | **Paper trading** | No | No | Yes (full daemon loop) |
+| **AI bias exploit** | No | No | RLHF hedging decompressor + cross-market arbitrage |
 
 ---
+
+## AI Bias Exploitation
+
+> [!NOTE]
+> Novel contribution: instead of only predicting events, K-Fish detects where AI traders are systematically wrong and exploits the bias.
+
+```mermaid
+flowchart LR
+    subgraph DETECT [" 5-Layer Bias Detection "]
+        L1["`**Layer 1**
+        Reasoning vs Probability
+        coherence gap`"]
+        L2["`**Layer 2**
+        Bimodal spread
+        split vs uncertain`"]
+        L3["`**Layer 3**
+        Knowledge cutoff
+        classification`"]
+        L4["`**Layer 4**
+        Confidence paradox
+        confident about 0.50`"]
+        L5["`**Layer 5**
+        Self-calibration
+        learn from outcomes`"]
+    end
+
+    DETECT --> R{Regime?}
+    R -->|RLHF Compression| D["`Decompress
+    0.51 → 0.65`"]
+    R -->|Knowledge Gap| C["`Follow Crowd
+    blend with market`"]
+    R -->|Genuine Uncertainty| S["`Skip
+    no edge`"]
+```
+
+<details>
+<summary><strong>How the decompressor works</strong></summary>
+
+When RLHF compression is detected (Fish reasoning says "strong evidence for YES" but probability is 0.52), the decompressor estimates the pre-hedging probability:
+
+| Signal | Value |
+|--------|-------|
+| Fish stated probability | 0.52 |
+| Reasoning direction score | +0.87 (strong YES) |
+| Implied probability | 0.85 |
+| Confidence weight | 0.60 |
+| **Decompressed** | **0.655** |
+| Market crowd price | 0.72 |
+
+The decompressed probability (0.655) is much closer to the crowd truth (0.72) than the raw output (0.52). The RLHF penalty was hiding 15 percentage points of directional signal.
+
+</details>
+
+<details>
+<summary><strong>Cross-market arbitrage</strong></summary>
+
+Detects logically inconsistent prices across related markets:
+
+| Type | Example | Detection |
+|------|---------|-----------|
+| Subset violation | P("GPT-6 released") > P("OpenAI releases model") | Buy NO on subset, YES on superset |
+| Complement violation | P(A) + P(not A) != 1.0 | Arbitrage the gap |
+| Spread mispricing | Correlated markets with excessive price spread | Hedged pair trade |
+
+Constructs hedged pair positions with full 4-scenario P&L analysis.
+
+</details>
 
 ## v5 Production Features
 
@@ -326,6 +394,7 @@ src/
 │   └── ipc.py                 #   File-based IPC for distributed Fish
 ├── prediction/                 # Scoring & Calibration
 │   ├── calibration.py         #   netcal v2: Beta/Histogram/auto-select + CRPS
+│   ├── ai_bias_detector.py    #   ★ 5-layer RLHF hedging detector + decompressor
 │   ├── advanced_scoring.py    #   Brier decomposition, bootstrap CI, BSS
 │   ├── batch_retrodiction.py  #   200+ market batch evaluation with DB
 │   ├── volatility.py          #   GARCH regime detection
@@ -343,6 +412,7 @@ src/
 │   └── alerts.py              #   JSONL event alerting
 ├── risk/                       # Position Sizing
 │   ├── portfolio.py           #   Edge detection, Kelly, drawdown monitor
+│   ├── arbitrage.py           #   ★ Cross-market arbitrage + hedged pair trades
 │   └── analytics.py           #   Sharpe/Sortino, Monte Carlo simulation
 ├── markets/                    # Market Data
 │   ├── polymarket.py          #   Gamma + CLOB API clients
@@ -446,15 +516,15 @@ block-beta
 
 | Metric | Value |
 |--------|:-----:|
-| Python source lines | ~15,000 |
-| Source modules | 35+ |
+| Python source lines | ~17,000 |
+| Source modules | 37 |
 | Unit tests passing | 120 |
-| Code reviews completed | 4 |
-| Bugs found and fixed | 36 |
+| Code reviews completed | 5 |
+| Bugs found and fixed | 42 |
 | Retrodiction markets | 200 |
 | Resolved market corpus | 2,500 |
 | External dataset | 408,863 markets |
-| Libraries integrated | 10 |
+| Libraries integrated | 11 |
 
 ---
 

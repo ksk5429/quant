@@ -21,6 +21,7 @@ src/
     ipc.py           # File-based distributed Fish protocol
   prediction/    # Scoring & calibration
     calibration.py       # netcal v2: Beta/Histogram/auto-select
+    ai_bias_detector.py  # 5-layer RLHF hedging detector + decompressor
     advanced_scoring.py  # Brier decomposition, CRPS, conformal intervals
     volatility.py        # GARCH regime detection
     run_retrodiction.py  # CLI-based evaluation runner
