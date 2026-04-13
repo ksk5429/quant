@@ -41,9 +41,14 @@ flowchart TD
     classifies category
     selects personas, rounds, extremization`"]
 
+    NEWS["`**NEWS RETRIEVAL** ★ new
+    trafilatura scrapes top articles
+    sentence-transformers ranks by relevance
+    top 3 injected into Fish prompts`"]
+
     C["`**RESEARCHER FISH**
     base rates · key facts
-    timing analysis · contrarian case`"]
+    timing · contrarian case · news context`"]
 
     subgraph DELPHI [" MULTI-ROUND DELPHI PROTOCOL "]
         direction TB
@@ -61,16 +66,17 @@ flowchart TD
     netcal auto-select
     Beta · Histogram · Isotonic`"]
 
+    BIAS["`**AI BIAS DETECTION** ★ new
+    5-layer RLHF decompressor
+    compression → decompress
+    knowledge gap → follow crowd`"]
+
     E2["`**VOLATILITY**
     GARCH regime detection
     Kelly adjustment factor`"]
 
-    E3["`**CONFORMAL**
-    90% coverage interval
-    prediction bounds`"]
-
     F["`**EDGE DETECTION**
-    |calibrated − market_price| > 7%
+    empirically optimized threshold
     confidence > 40% · spread < 35%`"]
 
     G["`**KELLY SIZING**
@@ -81,9 +87,9 @@ flowchart TD
     side YES/NO · size $
     expected value · reasoning chain`"]
 
-    A --> B --> C --> DELPHI --> D
-    D --> E1 & E2 & E3
-    E1 & E2 & E3 --> F
+    A --> B --> NEWS --> C --> DELPHI --> D
+    D --> E1 & BIAS & E2
+    E1 & BIAS & E2 --> F
     F --> G --> H
 ```
 
@@ -425,13 +431,15 @@ src/
 │   ├── llm_fish.py            #   9 personas, 4 backends, asymmetric extremization
 │   ├── researcher.py          #   Context gathering Fish
 │   ├── swarm_router.py        #   Category routing + model competition
+│   ├── news_context.py        #   ★ Real-time news retrieval + semantic ranking
 │   ├── live_pipeline.py       #   Scanner → Engine → Portfolio → Report
 │   └── ipc.py                 #   File-based IPC for distributed Fish
 ├── prediction/                 # Scoring & Calibration
 │   ├── calibration.py         #   netcal v2: Beta/Histogram/auto-select + CRPS
 │   ├── ai_bias_detector.py    #   ★ 5-layer RLHF hedging detector + decompressor
 │   ├── advanced_scoring.py    #   Brier decomposition, bootstrap CI, BSS
-│   ├── batch_retrodiction.py  #   200+ market batch evaluation with DB
+│   ├── retrodiction_pipeline.py # ★ Expansion pipeline with parquet output
+│   ├── batch_retrodiction.py  #   Batch evaluation with DB persistence
 │   ├── volatility.py          #   GARCH regime detection
 │   └── run_retrodiction.py    #   CLI-based evaluation runner
 ├── execution/                  #  v5  Live Trading
@@ -448,6 +456,7 @@ src/
 ├── risk/                       # Position Sizing
 │   ├── portfolio.py           #   Edge detection, Kelly, drawdown monitor
 │   ├── arbitrage.py           #   ★ Cross-market arbitrage + hedged pair trades
+│   ├── threshold_optimizer.py #   ★ Data-driven edge threshold from retrodiction
 │   └── analytics.py           #   Sharpe/Sortino, Monte Carlo simulation
 ├── markets/                    # Market Data
 │   ├── polymarket.py          #   Gamma + CLOB API clients
@@ -526,6 +535,9 @@ block-beta
 | Quarter-Kelly | Full Kelly has ~25% drawdowns | [Kelly 1956](https://doi.org/10.1002/j.1538-7305.1956.tb03809.x) |
 | Auto-seeded calibrator | No uncalibrated cold start | Code review: calibration was always a no-op |
 | CLI over API | $0 vs $3-15/M tokens | Maximize predictions per dollar |
+| Real-time news injection | Fish reason about post-cutoff events | Retrodiction: 5 worst misses were all post-cutoff surprises |
+| Data-driven edge threshold | Empirically optimal from 230+ retrodictions | Threshold optimizer sweeps 0-30%, finds where Kelly returns turn positive |
+| RLHF decompression | Extract true signal hidden by hedging bias | 5-layer detector: reasoning-probability gap identifies compression |
 
 </details>
 
@@ -551,13 +563,13 @@ block-beta
 
 | Metric | Value |
 |--------|:-----:|
-| Python source lines | ~17,000 |
-| Source modules | 37 |
+| Python source lines | ~18,000 |
+| Source modules | 40 |
 | Unit tests passing | 120 |
 | Code reviews completed | 5 |
 | Bugs found and fixed | 42 |
-| Retrodiction markets | 200 |
-| Resolved market corpus | 2,500 |
+| Retrodiction markets | 230+ (expanding) |
+| Resolved market corpus | 5,000 |
 | External dataset | 408,863 markets |
 | Libraries integrated | 11 |
 
