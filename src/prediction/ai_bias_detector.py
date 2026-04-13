@@ -102,7 +102,6 @@ class MarketBiasProfile:
 class BiasDetectorState:
     """Persistent state for self-calibration (Layer 5)."""
     regime_outcomes: dict[str, list[dict]] = field(default_factory=dict)
-    threshold_history: list[dict] = field(default_factory=list)
 
     def record_outcome(
         self, regime: str, action: str, our_prob: float,
@@ -162,24 +161,58 @@ _UNCERTAINTY_INDICATORS = [
 ]
 
 
-def _score_reasoning_direction(reasoning: str) -> float:
+def _score_reasoning_direction(reasoning: str, question: str = "") -> float:
     """Score the directional strength of reasoning text.
 
     Returns float in [-1, +1]:
     - Positive = reasoning argues for YES
     - Negative = reasoning argues for NO
-    - Near zero = genuinely uncertain or mixed
+    - Near zero = genuinely uncertain, mixed, OR contradictory
+
+    IMPORTANT: strips the question text from reasoning before scoring
+    to avoid false positives from question contamination.
     """
     text = reasoning.lower()
-    yes_count = sum(1 for indicator in _YES_INDICATORS if indicator in text)
-    no_count = sum(1 for indicator in _NO_INDICATORS if indicator in text)
-    uncertain_count = sum(1 for indicator in _UNCERTAINTY_INDICATORS if indicator in text)
+
+    # Strip question text to avoid contamination (reviewer fix)
+    if question:
+        q_lower = question.lower()
+        text = text.replace(q_lower, "")
+
+    # Use word boundary matching to avoid "not expected to fail" → NO
+    # when it should be YES. We check for negation context.
+    yes_count = 0
+    no_count = 0
+    uncertain_count = 0
+
+    for indicator in _YES_INDICATORS:
+        if indicator in text:
+            # Check for preceding negation within 5 words
+            idx = text.find(indicator)
+            prefix = text[max(0, idx - 30):idx]
+            if any(neg in prefix for neg in ["not ", "no ", "don't ", "doesn't ", "isn't ", "won't "]):
+                no_count += 1  # negated YES = NO
+            else:
+                yes_count += 1
+
+    for indicator in _NO_INDICATORS:
+        if indicator in text:
+            idx = text.find(indicator)
+            prefix = text[max(0, idx - 30):idx]
+            if any(neg in prefix for neg in ["not ", "no ", "don't ", "doesn't ", "isn't ", "won't "]):
+                yes_count += 1  # negated NO = YES
+            else:
+                no_count += 1
+
+    for indicator in _UNCERTAINTY_INDICATORS:
+        if indicator in text:
+            uncertain_count += 1
 
     total = yes_count + no_count + uncertain_count
     if total == 0:
         return 0.0
 
-    # Directional score: positive for YES indicators, negative for NO
+    # Directional score
     direction = (yes_count - no_count) / total
 
     # Dampen if uncertainty indicators are present
@@ -336,10 +369,12 @@ def _decompress_probability(
     weight = compression_strength * confidence
     decompressed = stated_probability * (1 - weight) + implied_prob * weight
 
-    # If bimodal, push further from 0.50 (the mean is misleading)
+    # If bimodal: the swarm is DISAGREEING about direction.
+    # This means higher uncertainty, not stronger signal.
+    # REDUCE the distance from 0.50 to express wider uncertainty.
     if is_bimodal:
         distance_from_half = decompressed - 0.50
-        decompressed = 0.50 + distance_from_half * 1.3
+        decompressed = 0.50 + distance_from_half * 0.7  # shrink toward 0.50
 
     return max(0.05, min(0.95, decompressed))
 
@@ -407,6 +442,17 @@ class AIBiasDetector:
         Returns:
             MarketBiasProfile with regime classification and recommended action.
         """
+        # Guard: empty Fish list
+        if not fish_predictions:
+            return MarketBiasProfile(
+                market_id=market_id, question=question,
+                swarm_probability=swarm_probability,
+                market_price=market_price, fish_predictions=[],
+                regime="no_data", recommended_action="skip",
+                decompressed_probability=swarm_probability,
+                reasoning="No Fish predictions available.",
+            )
+
         # ── Extract per-Fish signals ──
         fish_signals = []
         for fp in fish_predictions:
@@ -415,8 +461,8 @@ class AIBiasDetector:
             confidence = getattr(fp, "confidence", 0.5)
             persona = getattr(fp, "persona", "unknown")
 
-            # Layer 1
-            dir_score = _score_reasoning_direction(reasoning)
+            # Layer 1 (pass question for contamination stripping)
+            dir_score = _score_reasoning_direction(reasoning, question)
             implied = _implied_probability_from_direction(dir_score)
             rp_gap = abs(implied - probability)
 
@@ -453,18 +499,27 @@ class AIBiasDetector:
         bimodal = _detect_bimodal(probs, self.bimodal_threshold)
 
         # ── Classify regime ──
-        compression_detected = mean_rp_gap > self.rp_gap_threshold
+        mean_confidence = float(np.mean([fs.confidence for fs in fish_signals]))
+        # Compression requires both a gap AND sufficient confidence to decompress
+        compression_detected = (
+            mean_rp_gap > self.rp_gap_threshold
+            and mean_confidence > 0.3  # no point decompressing if confidence is too low
+        )
         knowledge_gap = n_cutoff >= len(fish_signals) * 0.3  # 30%+ Fish reference cutoff
         paradox = mean_ci > self.paradox_threshold
 
         if knowledge_gap:
             regime = "knowledge_gap"
             action = "follow_crowd"
-            decompressed = market_price  # trust crowd
+            # Do NOT set decompressed = market_price (circular — market price
+            # is the thing under investigation). Instead, blend swarm with crowd
+            # giving crowd higher weight proportional to knowledge gap severity.
+            crowd_weight = min(n_cutoff / len(fish_signals), 0.8)  # cap at 80% crowd
+            decompressed = swarm_probability * (1 - crowd_weight) + market_price * crowd_weight
             action_confidence = min(n_cutoff / len(fish_signals), 1.0)
             reason = (
                 f"{n_cutoff}/{len(fish_signals)} Fish reference knowledge cutoff. "
-                f"Market likely driven by post-cutoff information. Following crowd at {market_price:.2f}."
+                f"Blending with crowd (weight={crowd_weight:.0%}): {decompressed:.3f}."
             )
 
         elif compression_detected or (paradox and bimodal["is_bimodal"]):

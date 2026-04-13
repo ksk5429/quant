@@ -40,6 +40,7 @@ from src.prediction.calibration import ProbabilityCalibrator
 from src.prediction.advanced_scoring import (
     comprehensive_evaluate, brier_decomposition, conformal_prediction_interval,
 )
+from src.prediction.ai_bias_detector import AIBiasDetector, MarketBiasProfile
 from src.prediction.volatility import estimate_volatility, VolatilityEstimate
 from src.risk.portfolio import (
     EdgeDetector, KellyPositionSizer, MarketSignal, Position, DrawdownMonitor,
@@ -130,6 +131,7 @@ class PredictionEngineV4:
         )
         self._drawdown = DrawdownMonitor(max_drawdown_pct=0.15)
         self._competition = ModelCompetition()
+        self._bias_detector = AIBiasDetector()
 
         self._researcher = ResearcherFish(model=researcher_model, claude_bin=claude_bin)
         self._semaphore = asyncio.Semaphore(max_concurrent)
@@ -324,14 +326,37 @@ class PredictionEngineV4:
                     holdout_preds, holdout_outs, cal_prob, alpha=0.1,
                 )
 
-        # ── Step 7: Volatility check ──
+        # ── Step 7: AI Bias Detection ──
+        bias_profile = None
+        if market_price is not None:
+            bias_profile = self._bias_detector.analyze_market(
+                market_id=market_id,
+                question=question,
+                swarm_probability=cal_prob,
+                market_price=market_price,
+                fish_predictions=final_preds,
+            )
+            # If compression detected, use decompressed probability
+            if bias_profile.regime == "rlhf_compression":
+                cal_prob = bias_profile.decompressed_probability
+                logger.info(
+                    f"Bias: RLHF compression → decompressed to {cal_prob:.3f} "
+                    f"(from {ext_prob:.3f})"
+                )
+            elif bias_profile.regime == "knowledge_gap":
+                cal_prob = bias_profile.decompressed_probability
+                logger.info(
+                    f"Bias: knowledge gap → blended with crowd to {cal_prob:.3f}"
+                )
+
+        # ── Step 8: Volatility check ──
         vol_estimate = None
         kelly_vol_adj = 1.0
         if price_history and len(price_history) >= 5:
             vol_estimate = estimate_volatility(price_history)
             kelly_vol_adj = vol_estimate.kelly_adjustment
 
-        # ── Step 8: Edge detection + Kelly sizing ──
+        # ── Step 9: Edge detection + Kelly sizing ──
         position = None
         edge = 0.0
         swarm_healthy = agg.get("swarm_healthy", True)
