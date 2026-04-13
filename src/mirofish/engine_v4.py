@@ -40,6 +40,7 @@ from src.prediction.calibration import ProbabilityCalibrator
 from src.prediction.advanced_scoring import (
     comprehensive_evaluate, brier_decomposition, conformal_prediction_interval,
 )
+from src.mirofish.news_context import NewsContext, NewsContextResult
 from src.prediction.ai_bias_detector import AIBiasDetector, MarketBiasProfile
 from src.prediction.volatility import estimate_volatility, VolatilityEstimate
 from src.risk.portfolio import (
@@ -115,6 +116,8 @@ class PredictionEngineV4:
         bankroll_usd: float = 1000.0,
         claude_bin: str = "",
         db: "DatabaseManager | None" = None,
+        no_news: bool = False,
+        **kwargs,
     ) -> None:
         self.model = model
         self.researcher_model = researcher_model
@@ -132,6 +135,8 @@ class PredictionEngineV4:
         self._drawdown = DrawdownMonitor(max_drawdown_pct=0.15)
         self._competition = ModelCompetition()
         self._bias_detector = AIBiasDetector()
+        self._news_context = NewsContext() if not no_news else None
+        self._use_news = not no_news
 
         self._researcher = ResearcherFish(model=researcher_model, claude_bin=claude_bin)
         self._semaphore = asyncio.Semaphore(max_concurrent)
@@ -259,7 +264,21 @@ class PredictionEngineV4:
                         fish_predictions=screen_preds,
                     )
 
-        # ── Step 2: Research (if routed) ──
+        # ── Step 2a: News retrieval (if enabled) ──
+        news_block = ""
+        if self._use_news and self._news_context:
+            try:
+                news_result = await self._news_context.get_context(question, description)
+                if news_result.n_articles > 0:
+                    news_block = news_result.to_prompt_block()
+                    logger.info(
+                        f"News: {news_result.n_articles} articles "
+                        f"({news_result.elapsed_s:.1f}s)"
+                    )
+            except Exception as e:
+                logger.warning(f"News retrieval failed: {e}")
+
+        # ── Step 2b: Research (if routed) ──
         briefing = ""
         research_elapsed = 0.0
         if config.use_researcher:
@@ -267,6 +286,10 @@ class PredictionEngineV4:
             ctx = await self._researcher.research(question, description)
             research_elapsed = time.monotonic() - t_res
             briefing = ctx.to_briefing()
+
+        # Combine research + news context
+        if news_block:
+            briefing = f"{briefing}\n\n{news_block}" if briefing else news_block
 
         # ── Step 3: Multi-round Delphi ──
         fish_instances = [
