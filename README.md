@@ -94,31 +94,44 @@ flowchart TD
 > **Market:** *Will the Fed increase interest rates by 25+ bps after the March 2026 meeting?*
 
 ```mermaid
-graph LR
-    subgraph FISH [" 9 Fish Predictions "]
+flowchart TD
+    Q["`**Market Question**
+    Will the Fed increase interest rates
+    by 25+ bps after the March 2026 meeting?`"]
+
+    Q --> FISH
+
+    subgraph FISH [" 9 Fish Predict Independently "]
         direction LR
-        F1(("🎯<br/>Anchor<br/>0.20"))
-        F2(("🔀<br/>Decomp<br/>0.18"))
-        F3(("🔍<br/>Inside<br/>0.15"))
-        F4(("⚡<br/>Contra<br/>0.28"))
-        F5(("⏱️<br/>Tempo<br/>0.22"))
-        F6(("🏛️<br/>Instit<br/>0.17"))
-        F7(("💀<br/>Premrt<br/>0.25"))
-        F8(("📐<br/>Calibr<br/>0.19"))
-        F9(("📊<br/>Bayes<br/>0.16"))
+        F1["🎯 Anchor — **0.20**"]
+        F2["🔀 Decomp — **0.18**"]
+        F3["🔍 Inside — **0.15**"]
+        F4["⚡ Contra — **0.28**"]
+        F5["⏱️ Tempo — **0.22**"]
+        F6["🏛️ Instit — **0.17**"]
+        F7["💀 Premrt — **0.25**"]
+        F8["📐 Calibr — **0.19**"]
+        F9["📊 Bayes — **0.16**"]
     end
+
+    FISH --> AGG["`**Aggregation**
+    trimmed mean = 0.200`"]
+    AGG --> EXT["`**Extremization**
+    0.200 → 0.178`"]
+    EXT --> CAL["`**Calibration**
+    0.178 → 0.165`"]
+    CAL --> EDGE{"`**Edge Check**
+    |0.165 − 0.22| = 5.5%
+    threshold = 7%`"}
+    EDGE -->|"edge too small"| SKIP["`**NO POSITION**
+    edge below threshold`"]
+
+    ACTUAL["`**Actual Outcome**
+    Fed did not raise rates
+    K-Fish correct ✓ Brier = 0.027`"]
+
+    SKIP ~~~ ACTUAL
 ```
-
-| Stage | Value |
-|-------|-------|
-| Swarm raw average | 0.200 |
-| After extremization | 0.178 |
-| After calibration | 0.165 |
-| Market price | 0.22 |
-| Edge | 5.5% |
-| **Recommendation** | **NO POSITION** (edge below 7% threshold) |
-
-> **Actual outcome:** The Fed did not raise rates. K-Fish was correct (Brier = 0.027).
 
 ---
 
